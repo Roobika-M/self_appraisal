@@ -3,57 +3,47 @@ from docx import Document
 
 # Load the Excel file
 excel_path = "data.xlsx"
-doc_path = "template.docx"
+df_journal = pd.read_excel(excel_path, sheet_name="Journal Publication", skiprows=5)
 
-# Load the Word document template
+# Fix column names (remove spaces)
+df_journal.columns = df_journal.columns.str.strip()
+
+# Check actual column names
+print("Excel Columns:", df_journal.columns.tolist())
+
+# Filter data for a particular faculty member (Remove extra spaces if any)
+name1 = "Dr. Thenmozhi T"
+df_filtered = df_journal[df_journal["Name of the faculty"].str.strip() == name1]
+
+# Load the Word document
+doc_path = "template.docx"
 doc = Document(doc_path)
 
-# Load and clean the "Journal Publication" sheet
-df_journal = pd.read_excel(excel_path, sheet_name="Journal Publication", skiprows=4)
+# Verify table index
+for i, table in enumerate(doc.tables):
+    print(f"\nTable {i}:")
+    for row in table.rows[:2]:  # Print first 2 rows only
+        print([cell.text.strip() for cell in row.cells])
 
-# Rename columns based on actual headers
-df_journal.columns = [
-    "Faculty Name", "S.No", "Journal Name", "Paper Title", "Author Name",
-    "Volume Number", "Issue Number", "Page Number From", "Page Number To",
-    "ISSN", "Citation", "Year of Publication", "Web Link", "Impact Factor"
-]
+table_index = 3  # Update if needed
+table = doc.tables[table_index]
 
-# Drop any fully empty rows
-df_journal = df_journal.dropna(how="all")
+start_row = 1
+# Fill the table with Excel data
+for i, (_, row) in enumerate(df_filtered.iterrows()):
+    row_index = start_row+i
+    if i+1 >= len(table.rows):  
+        table.add_row()  # Add rows if needed
 
-# Remove the first row (repeated headers)
-df_journal_cleaned = df_journal.iloc[1:][[
-    "S.No", "Journal Name", "Paper Title", "Author Name", 
-    "ISSN", "Impact Factor"
-]]
-
-# Function to add a table to the Word document
-def add_table_no_style(doc, data, section_title, headers):
-    doc.add_paragraph(section_title)  # Add section title
-
-    if not data.empty:
-        table = doc.add_table(rows=1, cols=len(headers))  # Create table
-
-        # Add headers
-        hdr_cells = table.rows[0].cells
-        for i, header in enumerate(headers):
-            hdr_cells[i].text = header
-
-        # Add rows
-        for _, row in data.iterrows():
-            cells = table.add_row().cells
-            for i, col in enumerate(row):
-                cells[i].text = str(col) if pd.notna(col) else "-"
-        doc.add_paragraph("\n")
-    else:
-        doc.add_paragraph("No data available.\n")
-
-# Add Journal Publications to the Word document
-add_table_no_style(doc, df_journal_cleaned, "2.1 No. of Journal Publications", 
-                   ["S.No", "Journal Name", "Paper Title", "Author Name", "ISSN", "Impact Factor"])
+    table.cell(i+2, 0).text = str(i+1)  # Serial No.
+    table.cell(i+2, 1).text = str(row.get("Paper Title", "N/A"))
+    table.cell(i+2, 2).text = str(row.get("Journal Name", "N/A"))
+    table.cell(i+2, 3).text = str(row.get("Year of Publication", "N/A"))  # Fixed Date Mapping
+    table.cell(i+2, 4).text = str(row.get("ISSN", "N/A"))
+    table.cell(i+2, 5).text = str(row.get("Citation", "N/A"))  # Citation was missing in mapping
+    table.cell(i+2, 6).text = str(row.get("Impact Factor", "N/A"))
 
 # Save the modified document
-output_path = "filled_research_template.docx"
-doc.save(output_path)
-
-print(f"Template filled and saved as: {output_path}")
+output_doc_path = "filled_template.docx"
+doc.save(output_doc_path)
+print(f"✅ Word document saved as {output_doc_path}")
