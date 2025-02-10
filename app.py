@@ -1,59 +1,102 @@
-import pandas as pd
-from docx import Document
+from flask import Flask, request, render_template, redirect, url_for, make_response
+from flask_sqlalchemy import SQLAlchemy
 
-# Load the Excel file
-excel_path = "data.xlsx"
-doc_path = "template.docx"
+app = Flask(__name__)
 
-# Load the Word document template
-doc = Document(doc_path)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:*****@localhost/KITE_STAFF'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-# Load and clean the "Journal Publication" sheet
-df_journal = pd.read_excel(excel_path, sheet_name="Journal Publication", skiprows=4)
+db = SQLAlchemy(app)
 
-# Rename columns based on actual headers
-df_journal.columns = [
-    "Faculty Name", "S.No", "Journal Name", "Paper Title", "Author Name",
-    "Volume Number", "Issue Number", "Page Number From", "Page Number To",
-    "ISSN", "Citation", "Year of Publication", "Web Link", "Impact Factor"
-]
+class userlogin(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user = db.Column(db.String(80), nullable=False, unique=True)
+    password = db.Column(db.String(120), nullable=False)
 
-# Drop any fully empty rows
-df_journal = df_journal.dropna(how="all")
+    def __repr__(self):
+        return f"<User {self.user}>"
 
-# Remove the first row (repeated headers)
-df_journal_cleaned = df_journal.iloc[1:][[
-    "S.No", "Journal Name", "Paper Title", "Author Name", 
-    "ISSN", "Impact Factor"
-]]
+class Staff(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    position = db.Column(db.String(50))
 
-# Function to add a table to the Word document
-def add_table_no_style(doc, data, section_title, headers):
-    doc.add_paragraph(section_title)  # Add section title
+    def __repr__(self):
+        return f"<Staff {self.name}>"
 
-    if not data.empty:
-        table = doc.add_table(rows=1, cols=len(headers))  # Create table
+# Render the login page
+@app.route('/')
+def home():
+    return render_template('login.html', error=None)
 
-        # Add headers
-        hdr_cells = table.rows[0].cells
-        for i, header in enumerate(headers):
-            hdr_cells[i].text = header
+# Handle form submission
+@app.route('/login', methods=['POST'])
+@app.route('/login', methods=['POST'])
+def login():
+    username = request.form.get('username')
+    password = request.form.get('password')
 
-        # Add rows
-        for _, row in data.iterrows():
-            cells = table.add_row().cells
-            for i, col in enumerate(row):
-                cells[i].text = str(col) if pd.notna(col) else "-"
-        doc.add_paragraph("\n")
+    if not username or not password:
+        error = "Please enter both username and password."
+        return render_template('login.html', error=error)
+
+    usr = userlogin.query.filter_by(user=username).first()
+
+    # Validate password and user existence
+    if usr and password == usr.password:
+        return redirect(url_for('upload'))
     else:
-        doc.add_paragraph("No data available.\n")
+        error = "Invalid username or password. Please try again."
+        response = make_response(render_template('login.html', error=error))
+        response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+        return response
 
-# Add Journal Publications to the Word document
-add_table_no_style(doc, df_journal_cleaned, "2.1 No. of Journal Publications", 
-                   ["S.No", "Journal Name", "Paper Title", "Author Name", "ISSN", "Impact Factor"])
 
-# Save the modified document
-output_path = "filled_research_template.docx"
-doc.save(output_path)
+# Upload page
+@app.route('/upload', methods=['POST','GET'])
+def upload():
+    name = request.form.get('name')
+    des = request.form.get('designation')
+    dept = request.form.get('dept')
+    empid = request.form.get('empid')
+    return render_template('upload.html', error=None)
 
-print(f"Template filled and saved as: {output_path}")
+@app.route('/data', methods=['POST', 'GET'])
+def data():
+    if request.method == 'POST':
+        id = request.form.get('id')
+        username = request.form.get('username')
+        name = request.form.get('name')
+        password = request.form.get('password')
+        position = request.form.get('posi')
+
+        # Type conversion for ID
+        if id:
+            try:
+                id = int(id)
+            except ValueError:
+                return "ID must be a number"
+
+        if all([id, username, name, password, position]):
+            try:
+                user1 = userlogin(user=username, password=password, id=id)
+                staff1 = Staff(name=name, position=position, id=id)
+
+                db.session.add(user1)
+                db.session.add(staff1)
+                db.session.commit()
+                return "Data successfully added!"
+            except Exception as e:
+                db.session.rollback()
+                return f"Error: {str(e)}"
+        else:
+            error = "Please enter all values"
+            response = make_response(render_template('data.html', error=error))
+            response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+            return response
+    return render_template('data.html')
+
+if __name__ == '__main__':
+    with app.app_context():
+        db.create_all()
+    app.run(debug=True)
