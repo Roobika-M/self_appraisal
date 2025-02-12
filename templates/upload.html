@@ -82,7 +82,7 @@
         <a href="#" class="sign-up-link">Edit</a>
     </div>
     <div class="box2">
-    <form action="/upload" method="POST">
+    <form action="{{ url_for('upload') }}" method="POST">
         <div class="input-group">
             <h4>Name</h4>
             <input type="text" name="name" placeholder="Enter your name" required>
@@ -105,7 +105,11 @@
     <div class="button-wrap" style="align-items: center;">
         <button type="submit">submit</button>
     </div>
+    {% if error %}
+    <p style="color: red;">{{ error }}</p>
+    {% endif %}
     </form>
+    
 </div>
 </body>
 </html>

@@ -78,7 +78,7 @@
     <div class="box2">
     <!-- Login Section -->
     <h3 style="text-align: center;">LOG IN</h3>
-    <form action="/login" method="POST" autocomplete="off">
+    <form action="{{ url_for('data') }}" method="POST">
         <div class="input-group">
             <h4>Name:</h4>
             <input type="text" name="name" placeholder="Enter your name" required>
@@ -104,10 +104,11 @@
         </div>
     
         <button type="submit">Register</button>
+        {% if error %}
+        <p style="color: red;">{{ error }}</p>
+        {% endif %}
     </form>
-    {% if error %}
-    <p style="color: red;">{{ error }}</p>
-    {% endif %}
+    
     </div>
 </body>
 </html>
