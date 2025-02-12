@@ -7,15 +7,18 @@
     <style>
         /* Styling the header section */
         .box1 {
-            background-color: #26569e;
-            width: 95%;
-            padding: 10px;
+            background: linear-gradient(to bottom, 
+                          rgba(0, 0, 0, 0), 
+                          rgba(0, 0, 0, 0.5));
+            background-color: #1d5981;
+            width: 96%;
             text-align: left;
             position: absolute;
-            top: 2%;
+            top: 1%;
             border-radius: 8px;
             padding: 20px;
             color: #ddd;
+            height: 30px;
         }
 
         body {
@@ -29,6 +32,7 @@
             justify-content: center;
             align-items: center;
             margin: 0;
+            overflow: hidden;
         }
 
         .box2 {
@@ -37,11 +41,38 @@
             padding: 30px;
             border: 2px solid rgba(255, 255, 255, 0.3);
             border-radius: 12px;
-            position: absolute;
             width: 320px;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
             font-family: Arial;
         }
+
+        .button-wrap {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        .box2 button {
+            background-color: white;
+            border: none;
+            color: black;
+            padding: 14px 20px;
+            text-align: center;
+            font-size: 13px;
+            margin: 4px 2px;
+            transition: 0.3s;
+            border-radius: 10%;
+        }
+        .box2 button:hover {
+            background-color: #1d5981;
+            color: white;
+        }
+
+        /*.box2 button {
+            padding: 5px 20px; 
+            font-size: 13px;
+            color: black;
+        }*/
 
         /* Flex container for input and label */
         .input-group {
@@ -103,7 +134,9 @@
             <input type="password" name="password" placeholder="Enter password" required>
         </div>
     
-        <button type="submit">Register</button>
+        <div class="button-wrap" style="align-items: center;">
+            <button type="submit">Register</button>
+        </div>
         {% if error %}
         <p style="color: red;">{{ error }}</p>
         {% endif %}

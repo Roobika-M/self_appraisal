@@ -84,7 +84,12 @@ def data():
         if not all([username, name, password, position]):
             error = "Please enter all details."
             return render_template('data.html', error=error)
+        existing_user = userlo.query.filter_by(usernam=username).first()
 
+        if existing_user:
+            error = "Username exist."
+            return render_template('data.html', error=error)
+        
         try:
             new_user = userlo(id=id,usernam=username, password=password)
             new_staff = staff(id=id,name=name, position=position)
@@ -102,8 +107,8 @@ def data():
 
     return render_template('data.html')
 
-logging.basicConfig()
-logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
+'''logging.basicConfig()
+logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)'''
 
 @app.route('/excel', methods=['POST', 'GET'])
 def excel():

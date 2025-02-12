@@ -7,15 +7,18 @@
     <style>
         /* Styling the header section */
         .box1 {
-            background-color: #26569e;
-            width: 95%;
-            padding: 10px;
+            background: linear-gradient(to bottom, 
+                          rgba(0, 0, 0, 0), 
+                          rgba(0, 0, 0, 0.5));
+            background-color: #1d5981;
+            width: 96%;
             text-align: left;
             position: absolute;
-            top: 2%;
+            top: 1%;
             border-radius: 8px;
             padding: 20px;
             color: #ddd;
+            height: 30px;
         }
 
         body {
@@ -29,6 +32,7 @@
             justify-content: center;
             align-items: center;
             margin: 0;
+            overflow: hidden;
         }
 
         .box2 {
@@ -37,13 +41,35 @@
             padding: 30px;
             border: 2px solid rgba(255, 255, 255, 0.3);
             border-radius: 12px;
-            position: absolute;
             width: 320px;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
             font-family: Arial;
         }
 
         /* Flex container for input and label */
+
+        .button-wrap {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        .box2 button {
+            background-color: white;
+            border: none;
+            color: black;
+            padding: 14px 20px;
+            text-align: center;
+            font-size: 13px;
+            margin: 4px 2px;
+            transition: 0.3s;
+            border-radius: 10%;
+        }
+        .box2 button:hover {
+            background-color: #1d5981;
+            color: white;
+        }
+
         .input-group {
             display: flex;
             align-items: center;
@@ -79,23 +105,31 @@
     <div class="box2">
     <!-- Login Section -->
     <h3 style="text-align: center;">LOG IN</h3>
-    <form action="{{ url_for('login') }}" method="POST">
+    <form action="{{ url_for('login') }}" method="POST" autocomplete="off">
         <div class="input-group">
             <h4>User ID:</h4>
-            <input type="text" name="username" placeholder="Enter your username">
+            <input type="text" name="username" placeholder="Enter your username" autocomplete="off">
         </div>
-    
+
         <div class="input-group">
             <h4>Password:</h4>
             <input type="password" name="password" placeholder="Enter password">
         </div>
     
-        <button type="submit">Log In</button>
+        <div class="button-wrap" style="align-items: center;">
+        <button type="submit">Log in</button>
+        </div>
         {% if error %}
         <p style="color: red;">{{ error }}</p>
         {% endif %}
     </form>
     
     </div>
+    <script>
+        window.onload = function() {
+            document.getElementsByName("username")[0].value = "";
+            document.getElementsByName("password")[0].value = "";
+        };
+    </script>
 </body>
 </html>
