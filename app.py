@@ -14,7 +14,6 @@ df_journal = pd.read_excel(excel_path, sheet_name="Journal Publication", skiprow
 # Fix column names (remove spaces)
 df_journal.columns = df_journal.columns.str.strip()
 
-# Filter data for a particular faculty member (Remove extra spaces if any)
 df_journal["Name of the faculty"] = df_journal["Name of the faculty"].ffill()
 df_filtered = df_journal[df_journal["Name of the faculty"].str.strip() == name]
 
@@ -280,6 +279,108 @@ for i, (_, row) in enumerate(df_filtered.iterrows()):
     table15.cell(row_index+1, 3).text = str(row.get("Details", "N/A"))  
     table15.cell(row_index+1, 4).text = str(row.get("Department", "N/A"))
     table15.cell(row_index+1, 5).text = str(row.get("Awards","N/A"))
+####################################################################
+#######MoU data not found 16
+#####################################################################
+
+df_awards = pd.read_excel(excel_path,sheet_name="Extension Activities", skiprows=5)
+df_awards.columns = df_awards.columns.str.strip()
+df_awards["Name of the faculty"] = df_awards["Name of the faculty"].ffill()
+df_filtered = df_awards[df_awards["Name of the faculty"].str.strip() == name]
+table17_index = 17
+table17 = doc.tables[table17_index]
+start_row = 1
+for i, (_, row) in enumerate(df_filtered.iterrows()):
+    from_date = str(row.get("From Date","N/A"))
+    to_date = str(row.get("To Date","N/A"))
+    row_index = start_row+i
+    if i+2 >= len(table17.rows):  
+        table17.add_row()  # Add rows if needed
+
+    table17.cell(row_index+1, 0).text = str(i+1)  # Serial No.
+    table17.cell(row_index+1, 1).text = str(row.get("Name of the Event", "N/A"))
+    table17.cell(row_index+1, 2).text = f"{from_date} to {to_date}"
+    table17.cell(row_index+1, 3).text = str(row.get("Recognition", "N/A"))  
+    table17.cell(row_index+1, 4).text = str(row.get("Award", "N/A"))
+    table17.cell(row_index+1, 5).text = str(row.get("Description","N/A"))
+##################################################################################
+df_workshop = pd.read_excel(excel_path, sheet_name="Workshops", skiprows=5)
+
+df_workshop.columns = df_workshop.columns.str.strip()
+
+df_workshop["Name of the faculty"] = df_workshop["Name of the faculty"].ffill()
+df_filtered = df_workshop[df_workshop["Name of the faculty"].str.strip() == name]
+table18_index = 18
+table18 = doc.tables[table18_index]
+start_row = 1
+
+for i, (_, row) in enumerate(df_filtered.iterrows()):
+    
+    from_date = str(row.get("From Date","N/A"))
+    to_date = str(row.get("To Date","N/A"))
+    row_index = start_row+i
+    if i+2 >= len(table18.rows):  
+        table18.add_row()  # Add rows if needed
+
+    table18.cell(row_index+1, 0).text = str(i+1)  # Serial No.
+    table18.cell(row_index+1, 1).text = str(row.get("Topic", "N/A"))
+    table18.cell(row_index+1, 2).text = str(row.get("Department", "N/A"))
+    table18.cell(row_index+1, 3).text = f"{from_date} to {to_date}"
+    table18.cell(row_index+1, 4).text = str(row.get("No of Students", "N/A"))  
+    table18.cell(row_index+1, 5).text = str(row.get("Venue", "N/A"))  
+    table18.cell(row_index+1, 6).text = str(row.get("Description", "N/A")) 
+###############################################################################
+df_experts = pd.read_excel(excel_path, sheet_name="Guest Lectures", skiprows=8)
+
+df_experts.columns = df_experts.columns.str.strip()
+
+df_experts["Faculty Name"] = df_experts["Faculty Name"].ffill()
+df_filtered = df_experts[df_experts["Faculty Name"].str.strip() == name]
+table19_index = 19
+table19 = doc.tables[table19_index]
+start_row = 1
+
+for i, (_, row) in enumerate(df_filtered.iterrows()):
+    
+    from_date = str(row.get("From Date","N/A"))
+    to_date = str(row.get("To Date","N/A"))
+    row_index = start_row+i
+    if i+2 >= len(table19.rows):  
+        table19.add_row()  # Add rows if needed
+
+    table19.cell(row_index+1, 0).text = str(i+1)  # Serial No.
+    table19.cell(row_index+1, 1).text = str(row.get("Chief Guest Name", "N/A"))
+    table19.cell(row_index+1, 2).text = str(row.get("Address", "N/A"))
+    table19.cell(row_index+1, 3).text = str(row.get("Topic Name","N/A"))
+    table19.cell(row_index+1, 4).text = f"{from_date} to {to_date}"  
+    table19.cell(row_index+1, 5).text = str(row.get("Description", "N/A"))  
+    table19.cell(row_index+1, 6).text = str(row.get("Topic Delivered", "N/A")) 
+################################################################################
+df_project = pd.read_excel(excel_path, sheet_name="Project Guided and Mentoring")
+
+df_project.columns = df_project.columns.str.strip()
+
+df_project["Faculty Name"] = df_project["Faculty Name"].ffill()
+df_filtered = df_project[df_project["Faculty Name"].str.strip() == name]
+table21_index = 21
+table21 = doc.tables[table21_index]
+start_row = 1
+
+for i, (_, row) in enumerate(df_filtered.iterrows()):
+    
+    from_date = str(row.get("From Date","N/A"))
+    to_date = str(row.get("To Date","N/A"))
+    row_index = start_row+i
+    if i+2 >= len(table21.rows):  
+        table21.add_row()  # Add rows if needed
+
+    table21.cell(row_index+1, 0).text = str(i+1)  # Serial No.
+    table21.cell(row_index+1, 1).text = str(row.get("Project Title", "N/A"))
+    table21.cell(row_index+1, 2).text = str(row.get("Number of Students", "N/A"))
+    table21.cell(row_index+1, 3).text = str(row.get("Thrust area","N/A"))
+    table21.cell(row_index+1, 4).text = str(row.get("Outcome of the project", "N/A")) 
+    table21.cell(row_index+1, 5).text = str(row.get("Interdisciplinary", "N/A"))  
+    table21.cell(row_index+1, 6).text = str(row.get("Status", "N/A"))
 
 # Save the modified document
 output_doc_path = "filled_template.docx"
