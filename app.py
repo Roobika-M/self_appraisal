@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, redirect, url_for, make_response,flash
+from flask import Flask, request, render_template, redirect, url_for, make_response,flash,send_file
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 import logging
@@ -125,11 +125,18 @@ def excel():
         file.save(file_path)
 
         flash(f"File {file.filename} successfully uploaded!", "success")
-        return "sucess!"
+        return redirect(url_for("download_path"))
 
     return render_template('excel.html')
 
+@app.route('/download', methods=['POST', 'GET'])
+def download():
+    filename=os.path.join(app.config['UPLOAD_FOLDER'],"KGCMS FINALLL WORD.docx")
+    return send_file(filename,as_attachment=True)
 
+@app.route('/download_path')
+def download_path():
+    return render_template("download.html")
 
 if __name__ == '__main__':
     with app.app_context():
