@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        /* Styling the header section */
+        .box1 {
+            background: linear-gradient(to bottom, 
+                          rgba(0, 0, 0, 0), 
+                          rgba(0, 0, 0, 0.5));
+            background-color: #1d5981;
+            width: 96%;
+            text-align: left;
+            position: absolute;
+            top: 1%;
+            border-radius: 8px;
+            padding: 20px;
+            color: #ddd;
+            height: 30px;
+        }
+
+        body {
+            background-image: url('/static/kite.jpeg');
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-size: cover;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .box2 {
+            background: rgba(255, 255, 255, 0.2); /* Transparent white */
+            backdrop-filter: blur(3px); /* Apply blur effect */
+            padding: 30px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            width: 320px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            font-family: Arial;
+        }
+
+        .button-wrap {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        .box2 button {
+            background-color: white;
+            border: none;
+            color: black;
+            padding: 14px 20px;
+            text-align: center;
+            font-size: 13px;
+            margin: 4px 2px;
+            transition: 0.3s;
+            border-radius: 10%;
+        }
+        .box2 button:hover {
+            background-color: #1d5981;
+            color: white;
+        }
+
+        /*.box2 button {
+            padding: 5px 20px; 
+            font-size: 13px;
+            color: black;
+        }*/
+
+        /* Flex container for input and label */
+        .input-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .input-group h4 {
+            margin: 0;
+            width: 30%; /* Adjust label width */
+        }
+
+        input[type="text"], input[type="password"] {
+            flex: 1;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        /* Link alignment */
+        .sign-up-link {
+            float: right;
+            text-decoration: none;
+            color: #ddd;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Section -->
+    <div class="box1">
+        <b><p style="display: inline;">KITE</p></b>
+    </div>
+    <div class="box2">
+    <!-- Login Section -->
+    <h3 style="text-align: center;">LOG IN</h3>
+    <form action="{{ url_for('data') }}" method="POST">
+        <div class="input-group">
+            <h4>Name:</h4>
+            <input type="text" name="name" placeholder="Enter your name" required>
+        </div>
+        <div class="input-group">
+            <h4>ID:</h4>
+            <input type="text" name="id" placeholder="Enter your id" required>
+        </div>
+
+        <div class="input-group">
+            <h4>Position:</h4>
+            <input type="text" name="posi" placeholder="Enter position" required>
+        </div>
+
+        <div class="input-group">
+            <h4>username:</h4>
+            <input type="text" name="username" placeholder="Enter your username" required>
+        </div>
+    
+        <div class="input-group">
+            <h4>Password:</h4>
+            <input type="password" name="password" placeholder="Enter password" required>
+        </div>
+    
+        <div class="button-wrap" style="align-items: center;">
+            <button type="submit">Register</button>
+        </div>
+        {% if error %}
+        <p style="color: red;">{{ error }}</p>
+        {% endif %}
+    </form>
+    
+    </div>
+</body>
+</html>

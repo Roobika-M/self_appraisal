@@ -1,3 +1,8 @@
+from flask import Flask, request, render_template, redirect, url_for, make_response,flash,send_file
+from flask_sqlalchemy import SQLAlchemy
+from werkzeug.security import generate_password_hash, check_password_hash
+import logging
+import os
 import pandas as pd
 from docx import Document
 from docx.shared import Pt
