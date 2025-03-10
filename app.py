@@ -102,7 +102,7 @@ table6 = doc.tables[table6_index]
 table7 = doc.tables[table7_index]
 
 start_row = 1
-
+table = 0
 for i, (_, row) in enumerate(df_filtered.iterrows()):
     conference_type = str(row["Conference Type"]).strip().lower()
     if conference_type == "international":
@@ -124,13 +124,14 @@ for i, (_, row) in enumerate(df_filtered.iterrows()):
     table.cell(row_index + 1, 3).text = str(row.get("From Date", "-"))
     table.cell(row_index + 1, 4).text = str(row.get("Place", "-"))
     table.cell(row_index + 1, 5).text = str(row.get("Role", "-"))
-row_index=-1
-table.add_row()
-table.rows[row_index].cells[0].merge(table.rows[row_index].cells[-2])
-paragraph = table.cell(-1, 4).paragraphs[0]
-run = paragraph.add_run("Total score")
-paragraph.alignment = WD_PARAGRAPH_ALIGNMENT.RIGHT
-table.cell(-1, 5).text = str(n)
+if table!=0:
+    row_index=-1
+    table.add_row()
+    table.rows[row_index].cells[0].merge(table.rows[row_index].cells[-2])
+    paragraph = table.cell(-1, 4).paragraphs[0]
+    run = paragraph.add_run("Total score")
+    paragraph.alignment = WD_PARAGRAPH_ALIGNMENT.RIGHT
+    table.cell(-1, 5).text = str(n)
 m = m+n
 ##################################table6 research grant##############################################
 n = 0
@@ -149,19 +150,19 @@ for i, (_, row) in enumerate(df_filtered.iterrows()):
     row_index = start_row+i
     if i+2 >= len(table8.rows):  
         table8.add_row()  # Add rows if needed
+    if str(row.get("Coordinator", "-"))=="applied":
+        table8.cell(row_index+1, 0).text = str(i+1)  # Serial No.
+        table8.cell(row_index+1, 1).text = str(row.get("Coordinator", "-"))
+        table8.cell(row_index+1, 2).text = str(row.get("Title", "-")) 
+        table8.cell(row_index+1, 3).text = str(row.get("Type", "-"))
+        table8.cell(row_index+1, 4).text = str(row.get("Funding Agent", "-"))  
+        table8.cell(row_index+1, 5).text = str(row.get("Amount", "-"))  
+        table8.cell(row_index+1, 6).text = str(row.get("Applied On", "-"))  
 
-    table8.cell(row_index+1, 0).text = str(i+1)  # Serial No.
-    table8.cell(row_index+1, 1).text = str(row.get("Coordinator", "-"))
-    table8.cell(row_index+1, 2).text = str(row.get("Title", "-")) 
-    table8.cell(row_index+1, 3).text = str(row.get("Type", "-"))
-    table8.cell(row_index+1, 4).text = str(row.get("Funding Agent", "-"))  
-    table8.cell(row_index+1, 5).text = str(row.get("Amount", "-"))  
-    table8.cell(row_index+1, 6).text = str(row.get("Applied On", "-"))  
-
-    if row.get("Amount", "-")!="-":
-        if row.get("Amount", "-")>1000000:
+        if row.get("Amount", "-")!="-":
             total_amt+=row.get("Amount", "-")
-        n+=(row.get("Amount", "-")//1000000)*2
+if row.get("Amount", "-")>1000000:
+    n+=(row.get("Amount", "-")//1000000)*2
 row_index=-1
 table8.add_row()
 table8.rows[row_index].cells[0].merge(table8.rows[row_index].cells[-2])
@@ -171,8 +172,8 @@ paragraph.alignment = WD_PARAGRAPH_ALIGNMENT.RIGHT
 table8.cell(-1, 6).text = str(n)
 m = m+n
 #########################################table 7-seminar#########################################
-
-df_seminar = pd.read_excel(excel_path, sheet_name="Seminar", skiprows=4)
+n = 0
+df_seminar = pd.read_excel(excel_path, sheet_name="Research Grant", skiprows=5)
 
 df_seminar.columns = df_seminar.columns.str.strip()
 
@@ -181,21 +182,32 @@ df_filtered = df_seminar[df_seminar["Name of the faculty"].str.strip() == name]
 table9_index = 9 
 table9 = doc.tables[table9_index]
 start_row = 1
+if not df_filtered.empty:
+    for i, (_, row) in enumerate(df_filtered.iterrows()):
+        row_index = start_row+i
+        if i+2 >= len(table9.rows):  
+            table9.add_row()  # Add rows if needed
+        if str(row.get("Coordinator", "-"))!="applied":
+            table9.cell(row_index+1, 0).text = str(i+1)  # Serial No.
+            table9.cell(row_index+1, 1).text = str(row.get("Coordinator", "-"))
+            table9.cell(row_index+1, 2).text = str(row.get("Title", "-")) 
+            table9.cell(row_index+1, 3).text = str(row.get("Type", "-"))
+            table9.cell(row_index+1, 4).text = str(row.get("Funding Agent", "-"))  
+            table9.cell(row_index+1, 5).text = str(row.get("Amount", "-"))  
+            table9.cell(row_index+1, 6).text = str(row.get("Applied On", "-"))  
 
-for i, (_, row) in enumerate(df_filtered.iterrows()):
-    row_index = start_row+i
-    if i+2 >= len(table9.rows):  
-        table9.add_row()  # Add rows if needed
-
-    table9.cell(row_index+1, 0).text = str(i+1)  # Serial No.
-    table9.cell(row_index+1, 1).text = str(row.get("Co-ordinator", "-"))
-    table9.cell(row_index+1, 2).text = str(row.get("Types", "-"))
-    table9.cell(row_index+1, 3).text = str(row.get("Type", "-"))  
-    table9.cell(row_index+1, 4).text = str(row.get("Sponsored By", "-"))
-    table9.cell(row_index+1, 5).text = str(row.get("Amount", "-"))  
-    table9.cell(row_index+1, 6).text = str(row.get("Year", "-"))
-    table9.cell(row_index+1, 7).text = str(row.get("Duration", "-"))
-
+            if row.get("Amount", "-")!="-":
+                total_amt+=row.get("Amount", "-")
+    if row.get("Amount", "-")>50000:
+        n+=(row.get("Amount", "-")//50000)
+    row_index=-1
+    table9.add_row()
+    table9.rows[row_index].cells[0].merge(table9.rows[row_index].cells[-2])
+    paragraph = table9.cell(-1, 5).paragraphs[0]
+    run = paragraph.add_run("Total score")
+    paragraph.alignment = WD_PARAGRAPH_ALIGNMENT.RIGHT
+    table9.cell(-1, 6).text = str(n)
+    m = m+n
 ###############################################table 8,9-patent##################
 n = 0
 df_patent = pd.read_excel(excel_path, sheet_name="Patents")
@@ -286,14 +298,14 @@ for i, (_, row) in enumerate(df_filtered.iterrows()):
     row_index = start_row+i
     if i+2 >= len(table13.rows):  
         table13.add_row()  # Add rows if needed
-
-    table13.cell(row_index+1, 0).text = str(i+1)  # Serial No.
-    table13.cell(row_index+1, 1).text = str(row.get("Topic", "-"))
-    table13.cell(row_index+1, 2).text = f"{from_date} to {to_date}"
-    table13.cell(row_index+1, 3).text = str(row.get("Description", "-"))  
-    table13.cell(row_index+1, 4).text = str(row.get("Venue", "-")) 
-    if n<3:
-        n+=1
+    if str(row.get("Role")) == "attended":
+        table13.cell(row_index+1, 0).text = str(i+1)  # Serial No.
+        table13.cell(row_index+1, 1).text = str(row.get("Topic", "-"))
+        table13.cell(row_index+1, 2).text = f"{from_date} to {to_date}"
+        table13.cell(row_index+1, 3).text = str(row.get("Description", "-"))  
+        table13.cell(row_index+1, 4).text = str(row.get("Venue", "-")) 
+        if n<3:
+            n+=1
 
 row_index=-1
 table13.add_row()
@@ -306,12 +318,12 @@ m = m+n
 
 ###################################table 12-skill dev####################################
 n = 0
-df_develop = pd.read_excel(excel_path, sheet_name="Faculty Development Program", skiprows=5)
+df_develop = pd.read_excel(excel_path, sheet_name="Faculty Internship", skiprows=5)
 
 df_develop.columns = df_develop.columns.str.strip()
 
-df_develop["Name of the Faculty"] = df_develop["Name of the Faculty"].ffill()
-df_filtered = df_develop[df_develop["Name of the Faculty"].str.strip() == name]
+df_develop["Name of the faculty"] = df_develop["Name of the faculty"].ffill()
+df_filtered = df_develop[df_develop["Name of the faculty"].str.strip() == name]
 table14_index = 15  
 table14 = doc.tables[table14_index]
 start_row = 1
@@ -401,26 +413,26 @@ m = m+n
 #     m = m+n
 ###################################table 16-spl contribute##################################
 
-df_awards = pd.read_excel(excel_path,sheet_name="Extension Activities", skiprows=5)
-df_awards.columns = df_awards.columns.str.strip()
-df_awards["Name of the faculty"] = df_awards["Name of the faculty"].ffill()
-df_filtered = df_awards[df_awards["Name of the faculty"].str.strip() == name]
-table17_index = 18
-table17 = doc.tables[table17_index]
-start_row = 1
-for i, (_, row) in enumerate(df_filtered.iterrows()):
-    from_date = str(row.get("From Date","-"))
-    to_date = str(row.get("To Date","-"))
-    row_index = start_row+i
-    if i+2 >= len(table17.rows):  
-        table17.add_row()  # Add rows if needed
+# df_awards = pd.read_excel(excel_path,sheet_name="Extension Activities", skiprows=5)
+# df_awards.columns = df_awards.columns.str.strip()
+# df_awards["Name of the faculty"] = df_awards["Name of the faculty"].ffill()
+# df_filtered = df_awards[df_awards["Name of the faculty"].str.strip() == name]
+# table17_index = 18
+# table17 = doc.tables[table17_index]
+# start_row = 1
+# for i, (_, row) in enumerate(df_filtered.iterrows()):
+#     from_date = str(row.get("From Date","-"))
+#     to_date = str(row.get("To Date","-"))
+#     row_index = start_row+i
+#     if i+2 >= len(table17.rows):  
+#         table17.add_row()  # Add rows if needed
 
-    table17.cell(row_index+1, 0).text = str(i+1)  # Serial No.
-    table17.cell(row_index+1, 1).text = str(row.get("Name of the Event", "-"))
-    table17.cell(row_index+1, 2).text = f"{from_date} to {to_date}"
-    table17.cell(row_index+1, 3).text = str(row.get("Recognition", "-"))  
-    table17.cell(row_index+1, 4).text = str(row.get("Award", "-"))
-    table17.cell(row_index+1, 5).text = str(row.get("Description","-"))
+#     table17.cell(row_index+1, 0).text = str(i+1)  # Serial No.
+#     table17.cell(row_index+1, 1).text = str(row.get("Name of the Event", "-"))
+#     table17.cell(row_index+1, 2).text = f"{from_date} to {to_date}"
+#     table17.cell(row_index+1, 3).text = str(row.get("Recognition", "-"))  
+#     table17.cell(row_index+1, 4).text = str(row.get("Award", "-"))
+#     table17.cell(row_index+1, 5).text = str(row.get("Description","-"))
 ###################################table 16-no of conference,workshop,hack###############################################
 n = 0
 df_workshop = pd.read_excel(excel_path, sheet_name="Workshops", skiprows=5)
@@ -440,16 +452,16 @@ for i, (_, row) in enumerate(df_filtered.iterrows()):
     row_index = start_row+i
     if i+2 >= len(table18.rows):  
         table18.add_row()  # Add rows if needed
+    if str(row.get("Role", "-"))=="conducted":
+        table18.cell(row_index+1, 0).text = str(i+1)  # Serial No.
+        table18.cell(row_index+1, 1).text = str(row.get("Topic", "-"))
+        table18.cell(row_index+1, 2).text = str(row.get("Department", "-"))
+        table18.cell(row_index+1, 3).text = f"{from_date} to {to_date}"
+        table18.cell(row_index+1, 4).text = str(row.get("No of Students", "-"))  
+        table18.cell(row_index+1, 5).text = str(row.get("Venue", "-"))  
+        table18.cell(row_index+1, 6).text = str(row.get("Description", "-")) 
 
-    table18.cell(row_index+1, 0).text = str(i+1)  # Serial No.
-    table18.cell(row_index+1, 1).text = str(row.get("Topic", "-"))
-    table18.cell(row_index+1, 2).text = str(row.get("Department", "-"))
-    table18.cell(row_index+1, 3).text = f"{from_date} to {to_date}"
-    table18.cell(row_index+1, 4).text = str(row.get("No of Students", "-"))  
-    table18.cell(row_index+1, 5).text = str(row.get("Venue", "-"))  
-    table18.cell(row_index+1, 6).text = str(row.get("Description", "-")) 
-
-    n += 0.5
+        n += 0.5
 
 row_index=-1
 table18.add_row()
