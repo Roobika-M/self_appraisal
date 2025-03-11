@@ -124,14 +124,14 @@ for i, (_, row) in enumerate(df_filtered.iterrows()):
     table.cell(row_index + 1, 3).text = str(row.get("From Date", "-"))
     table.cell(row_index + 1, 4).text = str(row.get("Place", "-"))
     table.cell(row_index + 1, 5).text = str(row.get("Role", "-"))
-if table!=0:
-    row_index=-1
-    table.add_row()
-    table.rows[row_index].cells[0].merge(table.rows[row_index].cells[-2])
-    paragraph = table.cell(-1, 4).paragraphs[0]
-    run = paragraph.add_run("Total score")
-    paragraph.alignment = WD_PARAGRAPH_ALIGNMENT.RIGHT
-    table.cell(-1, 5).text = str(n)
+    if table!=0:
+        row_index=-1
+        table.add_row()
+        table.rows[row_index].cells[0].merge(table.rows[row_index].cells[-2])
+        paragraph = table.cell(-1, 4).paragraphs[0]
+        run = paragraph.add_run("Total score")
+        paragraph.alignment = WD_PARAGRAPH_ALIGNMENT.RIGHT
+        table.cell(-1, 5).text = str(n)
 m = m+n
 ##################################table6 research grant##############################################
 n = 0
@@ -166,10 +166,10 @@ if row.get("Amount", "-")>1000000:
 row_index=-1
 table8.add_row()
 table8.rows[row_index].cells[0].merge(table8.rows[row_index].cells[-2])
-paragraph = table8.cell(-1, 5).paragraphs[0]
+paragraph = table8.cell(-1, 6).paragraphs[0]
 run = paragraph.add_run("Total score")
 paragraph.alignment = WD_PARAGRAPH_ALIGNMENT.RIGHT
-table8.cell(-1, 6).text = str(n)
+table8.cell(-1, 7).text = str(n)
 m = m+n
 #########################################table 7-seminar#########################################
 n = 0
@@ -440,7 +440,10 @@ df_workshop = pd.read_excel(excel_path, sheet_name="Workshops", skiprows=5)
 df_workshop.columns = df_workshop.columns.str.strip()
 
 df_workshop["Name of the faculty"] = df_workshop["Name of the faculty"].ffill()
-df_filtered = df_workshop[df_workshop["Name of the faculty"].str.strip() == name]
+df_filtered = df_workshop[
+    (df_workshop["Name of the faculty"].fillna("").str.strip() == name) & 
+    (df_workshop["Role"].fillna("").str.strip() == "conducted")
+]
 table18_index = 19
 table18 = doc.tables[table18_index]
 start_row = 1
@@ -449,10 +452,11 @@ for i, (_, row) in enumerate(df_filtered.iterrows()):
     
     from_date = str(row.get("From Date","-"))
     to_date = str(row.get("To Date","-"))
-    row_index = start_row+i
-    if i+2 >= len(table18.rows):  
-        table18.add_row()  # Add rows if needed
+      # Add rows if needed
     if str(row.get("Role", "-"))=="conducted":
+        row_index = start_row+i
+        if i+2 >= len(table18.rows):  
+            table18.add_row()
         table18.cell(row_index+1, 0).text = str(i+1)  # Serial No.
         table18.cell(row_index+1, 1).text = str(row.get("Topic", "-"))
         table18.cell(row_index+1, 2).text = str(row.get("Department", "-"))
