@@ -3,114 +3,116 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Upload Excel Sheet</title>
+    <title>Upload Excel | KITE</title>
     <style>
+        /* Header Styling */
         .box1 {
-            background: linear-gradient(to bottom, 
-                          rgba(0, 0, 0, 0), 
-                          rgba(0, 0, 0, 0.5));
-            background-color: #1d5981;
-            width: 96%;
-            text-align: left;
-            position: absolute;
-            top: 1%;
-            border-radius: 8px;
-            padding: 20px;
-            color: #ddd;
-            height: 30px;
+            background: linear-gradient(to right, #1d5981, #3a85b6);
+            width: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            color: white;
+            height: 60px;
+            padding: 0 20px;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            font-family: 'Arial', sans-serif;
+            font-size: 18px;
+            font-weight: bold;
+            z-index: 1000;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
 
+        /* Page Background */
         body {
-            background-image: url('/static/kite.jpeg');
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-            background-size: cover;
+            background: linear-gradient(to right, #e3f2fd, #bbdefb);
             height: 100vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             margin: 0;
-            overflow: hidden;
+            font-family: 'Arial', sans-serif;
+            padding-top: 80px;
         }
 
+        /* Upload Box */
         .box2 {
-            background: rgba(255, 255, 255, 0.2); /* Transparent white */
-            backdrop-filter: blur(3px); /* Apply blur effect */
+            background: white;
             padding: 30px;
-            border: 2px solid rgba(255, 255, 255, 0.3);
             border-radius: 12px;
-            width: 320px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            font-family: Arial;
+            width: 350px;
+            max-width: 90%;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            text-align: center;
         }
 
+        .box2 h3 {
+            margin-bottom: 20px;
+            color: #1d5981;
+            font-size: 24px;
+        }
+
+        /* Input Styling */
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            background: white;
+            cursor: pointer;
+        }
+
+        /* Button Styling */
         .button-wrap {
             display: flex;
             justify-content: center;
-            margin-top: 10px;
         }
+
         .box2 button {
-            background-color: white;
+            background: #1d5981;
             border: none;
-            color: black;
-            padding: 14px 20px;
-            text-align: center;
-            font-size: 13px;
-            margin: 4px 2px;
-            transition: 0.3s;
-            border-radius: 10%;
-        }
-        .box2 button:hover {
-            background-color: #1d5981;
             color: white;
-        }
-        /* Flex container for input and label */
-        .input-group {
-            display: flex;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-
-        .input-group h4 {
-            margin: 0;
-            width: 30%; /* Adjust label width */
+            padding: 12px 20px;
+            font-size: 15px;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+            transition: 0.3s;
         }
 
-        input[type="text"], input[type="password"] {
-            flex: 1;
-            padding: 5px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-
-        /* Link alignment */
-        .sign-up-link {
-            float: right;
-            text-decoration: none;
-            color: #ddd;
+        .box2 button:hover {
+            background: #16608a;
         }
     </style>
-
 </head>
 <body>
+
+    <!-- Header Section -->
     <div class="box1">
-        <b><p style="display: inline;">KITE</p></b>
+        <span>KITE</span>
     </div>
+
+    <!-- Upload Box -->
     <div class="box2">
-        <h3 style="text-align: center";>Upload Excel Sheet</h3>
+        <h3>Upload Excel Sheet</h3>
         <form action="{{ url_for('excel') }}" method="POST" enctype="multipart/form-data">
             <div class="input-group">
-            <input type="file" name="excel_file" accept=".xlsx, .xls" required>
-            <br>
+                <input type="file" name="excel_file" accept=".xlsx, .xls" required>
             </div>
-            <div class="button-wrap" style="align-items: center;">
+            <div class="button-wrap">
                 <button type="submit">Upload</button>
             </div>
-            {% if error %}
-            <p style="color: red;">{{ error }}</p>
-            {% endif %}
         </form>
     </div>
+
 </body>
 </html>

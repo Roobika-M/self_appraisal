@@ -3,81 +3,97 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Upload Excel Sheet</title>
+    <title>Download File | KITE</title>
     <style>
+        /* Header Styling */
         .box1 {
-            background: linear-gradient(to bottom, 
-                          rgba(0, 0, 0, 0), 
-                          rgba(0, 0, 0, 0.5));
-            background-color: #1d5981;
-            width: 96%;
-            text-align: left;
-            position: absolute;
-            top: 1%;
-            border-radius: 8px;
-            padding: 20px;
-            color: #ddd;
-            height: 30px;
+            background: linear-gradient(to right, #1d5981, #3a85b6);
+            width: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            color: white;
+            height: 60px;
+            padding: 0 20px;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            font-size: 18px;
+            font-weight: bold;
+            z-index: 1000;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
 
+        /* Page Background */
         body {
-            background-image: url('/static/kite.jpeg');
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-            background-size: cover;
+            background: linear-gradient(to right, #e3f2fd, #bbdefb);
             height: 100vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             margin: 0;
-            overflow: hidden;
+            font-family: 'Arial', sans-serif;
+            padding-top: 80px;
         }
 
+        /* Download Box */
         .box2 {
-            background: rgba(255, 255, 255, 0.2); /* Transparent white */
-            backdrop-filter: blur(3px); /* Apply blur effect */
+            background: white;
             padding: 30px;
-            border: 2px solid rgba(255, 255, 255, 0.3);
             border-radius: 12px;
-            width: 320px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            font-family: Arial;
+            width: 350px;
+            max-width: 90%;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            text-align: center;
         }
 
+        .box2 h2 {
+            color: #1d5981;
+            font-size: 22px;
+            margin-bottom: 20px;
+        }
+
+        /* Button Styling */
         .button-wrap {
             display: flex;
             justify-content: center;
-            margin-top: 10px;
         }
-        .dowbut {
-            background-color: white;
+
+        .download-btn {
+            background: #1d5981;
             border: none;
-            color: black;
-            padding: 14px 20px;
-            text-align: center;
-            font-size: 13px;
-            margin: 4px 2px;
-            transition: 0.3s;
-            border-radius: 10%;
-            text-decoration: none;
-        }
-        .dowbut:hover {
-            background-color: #1d5981;
             color: white;
+            padding: 12px 20px;
+            font-size: 15px;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: 0.3s;
+            display: inline-block;
+        }
+
+        .download-btn:hover {
+            background: #16608a;
         }
     </style>
-
 </head>
 <body>
+
+    <!-- Header Section -->
     <div class="box1">
-        <b><p style="display: inline;">KITE</p></b>
+        <span>KITE</span>
     </div>
+
+    <!-- Download Box -->
     <div class="box2">
-       <h2>DOWNLOAD HERE!</h2>
-       <div class="button-wrap" style="align-items: center;">
-       <a href="{{ url_for('download')}}" download class="dowbut"> click here</a>
+        <h2>Download Your File</h2>
+        <div class="button-wrap">
+            <a href="{{ url_for('download') }}" class="download-btn" download>Click Here</a>
+        </div>
     </div>
-    </div>
+
 </body>
 </html>

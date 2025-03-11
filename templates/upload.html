@@ -3,125 +3,129 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Upload Details | KITE</title>
     <style>
+        /* Use the same styles as before */
         .box1 {
-            background: linear-gradient(to bottom, 
-                          rgba(0, 0, 0, 0), 
-                          rgba(0, 0, 0, 0.5));
-            background-color: #1d5981;
-            width: 96%;
-            text-align: left;
-            position: absolute;
-            top: 1%;
-            border-radius: 8px;
-            padding: 20px;
-            color: #ddd;
-            height: 30px;
-        }
-        .box2 {
-            background: rgba(255, 255, 255, 0.2); /* Transparent white */
-            backdrop-filter: blur(3px); /* Apply blur effect */
-            padding: 30px;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-radius: 12px;
-            
-            width: 320px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            font-family: Arial;
-        }
-        .button-wrap {
-            display: flex;
-            justify-content: center;
-            margin-top: 10px;
-        }
-        .box2 button {
-            background-color: white;
-            border: none;
-            color: black;
-            padding: 14px 20px;
-            text-align: center;
-            font-size: 13px;
-            margin: 4px 2px;
-            transition: 0.3s;
-            border-radius: 10%;
-        }
-        .box2 button:hover {
-            background-color: #1d5981;
+            background: linear-gradient(to right, #1d5981, #3a85b6);
+            width: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
             color: white;
+            height: 60px;
+            padding: 0 20px;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            font-size: 18px;
+            font-weight: bold;
+            z-index: 1000;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
-        .sign-up-link {
-            float: right;
-            text-decoration: none;
-            color: #ddd;
-            padding-right: 5px;
-        }
+
         body {
-            background-image: url('/static/kite.jpeg');
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-            background-size: cover;
+            background: linear-gradient(to right, #e3f2fd, #bbdefb);
             height: 100vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             margin: 0;
-            overflow: hidden;
-        }
-        .input-group {
-            display: flex;
-            align-items: center;
-            margin-bottom: 15px;
+            font-family: 'Arial', sans-serif;
+            padding-top: 80px;
         }
 
-        .input-group h4 {
-            margin: 0;
-            width: 30%; /* Adjust label width */
+        .box2 {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            width: 350px;
+            max-width: 90%;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        .box2 h3 {
+            color: #1d5981;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        .input-group label {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #333;
         }
 
         input[type="text"] {
-            flex: 1;
-            padding: 5px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: 0.3s;
+        }
+
+        .box2 button {
+            background: #1d5981;
+            border: none;
+            color: white;
+            padding: 12px 20px;
+            font-size: 15px;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+            transition: 0.3s;
+        }
+
+        .box2 button:hover {
+            background: #16608a;
         }
     </style>
 </head>
 <body>
+
     <div class="box1">
-        <b><p style="display: inline; padding-left: 5px;">KITE</p></b>
-        <a href="#" class="sign-up-link">Edit</a>
+        <span>KITE</span>
     </div>
+
     <div class="box2">
-    <form action="{{ url_for('upload') }}" method="POST">
-        <div class="input-group">
-            <h4>Name</h4>
-            <input type="text" name="name" placeholder="Enter your name" required>
-        </div>
-    
-        <div class="input-group">
-            <h4>Designation</h4>
-            <input type="text" name="designation" placeholder="Designation" required>
-        </div>
+        <h3>Upload Details</h3>
+        <form action="{{ url_for('upload') }}" method="POST">
+            <div class="input-group">
+                <label>Name</label>
+                <input type="text" name="name" required>
+            </div>
 
-        <div class="input-group">
-            <h4>Department</h4>
-            <input type="text" name="dept" placeholder="Department" required>
-        </div>
+            <div class="input-group">
+                <label>Designation</label>
+                <input type="text" name="designation" required>
+            </div>
 
-        <div class="input-group">
-            <h4>Employee ID</h4>
-            <input type="text" name="empid" placeholder="Employee" required>
-        </div>
-    <div class="button-wrap" style="align-items: center;">
-        <button type="submit">submit</button>
+            <div class="input-group">
+                <label>Department</label>
+                <input type="text" name="dept" required>
+            </div>
+
+            <div class="input-group">
+                <label>Employee ID</label>
+                <input type="text" name="empid" required>
+            </div>
+
+            <button type="submit">Submit</button>
+        </form>
     </div>
-    {% if error %}
-    <p style="color: red;">{{ error }}</p>
-    {% endif %}
-    </form>
-    
-</div>
+
 </body>
 </html>
