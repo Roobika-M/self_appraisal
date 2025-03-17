@@ -5,53 +5,65 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Download File | KITE</title>
     <style>
-        /* Header Styling */
+        /* General Styling */
+        html, body {
+            height: 100%;
+            margin: 0;
+            font-family: 'Montserrat', sans-serif;
+            background-color: white;
+            color: #003366;
+        }
+
+        /* Top Header */
         .box1 {
-            background: linear-gradient(to right, #1d5981, #3a85b6);
+            background: #003366;
             width: 100%;
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             color: white;
-            height: 60px;
+            height: 70px;
             padding: 0 20px;
             display: flex;
             justify-content: flex-start;
             align-items: center;
-            font-size: 18px;
+            font-size: 22px;
             font-weight: bold;
             z-index: 1000;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         }
 
-        /* Page Background */
+        /* Adjusting body to prevent overlap */
         body {
-            background: linear-gradient(to right, #e3f2fd, #bbdefb);
-            height: 100vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            margin: 0;
-            font-family: 'Arial', sans-serif;
-            padding-top: 80px;
+            padding-top: 100px;
         }
 
         /* Download Box */
         .box2 {
             background: white;
-            padding: 30px;
+            padding: 40px;
             border-radius: 12px;
-            width: 350px;
+            width: 380px;
             max-width: 90%;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
             text-align: center;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            border: 2px solid #5A9BD5;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .box2 h2 {
-            color: #1d5981;
-            font-size: 22px;
+            color: #003366;
+            font-size: 24px;
             margin-bottom: 20px;
         }
 
@@ -59,35 +71,37 @@
         .button-wrap {
             display: flex;
             justify-content: center;
+            margin-top: 15px;
         }
 
         .download-btn {
-            background: #1d5981;
+            background: #003366;
             border: none;
             color: white;
-            padding: 12px 20px;
-            font-size: 15px;
+            padding: 14px 20px;
+            font-size: 16px;
             font-weight: bold;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
             text-decoration: none;
             transition: 0.3s;
             display: inline-block;
+            width: 100%;
+            text-align: center;
         }
 
         .download-btn:hover {
-            background: #16608a;
+            background: #5A9BD5;
+            transform: translateY(-2px);
         }
     </style>
 </head>
 <body>
 
-    <!-- Header Section -->
     <div class="box1">
         <span>KITE</span>
     </div>
 
-    <!-- Download Box -->
     <div class="box2">
         <h2>Download Your File</h2>
         <div class="button-wrap">

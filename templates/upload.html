@@ -5,92 +5,118 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Upload Details | KITE</title>
     <style>
-        /* Use the same styles as before */
+        /* General Styling */
+        html, body {
+            height: 100%;
+            margin: 0;
+            font-family: 'Montserrat', sans-serif;
+            background-color: white;
+            color: #003366;
+        }
+
+        /* Top Header */
         .box1 {
-            background: linear-gradient(to right, #1d5981, #3a85b6);
+            background: #003366;
             width: 100%;
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             color: white;
-            height: 60px;
+            height: 70px;
             padding: 0 20px;
             display: flex;
             justify-content: flex-start;
             align-items: center;
-            font-size: 18px;
+            font-size: 22px;
             font-weight: bold;
             z-index: 1000;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         }
 
+        /* Adjusting body to prevent overlap */
         body {
-            background: linear-gradient(to right, #e3f2fd, #bbdefb);
-            height: 100vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            margin: 0;
-            font-family: 'Arial', sans-serif;
-            padding-top: 80px;
+            padding-top: 100px;
         }
 
+        /* Form Box */
         .box2 {
             background: white;
-            padding: 30px;
+            padding: 40px;
             border-radius: 12px;
-            width: 350px;
+            width: 380px;
             max-width: 90%;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
             text-align: center;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            border: 2px solid #5A9BD5;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .box2 h3 {
-            color: #1d5981;
-            font-size: 24px;
+            color: #003366;
+            font-size: 26px;
             margin-bottom: 20px;
         }
 
+        /* Input Styling */
         .input-group {
-            display: flex;
-            flex-direction: column;
-            margin-bottom: 15px;
             text-align: left;
+            margin-bottom: 20px;
         }
 
         .input-group label {
-            font-size: 14px;
+            font-size: 15px;
             font-weight: bold;
-            margin-bottom: 5px;
-            color: #333;
+            color: #003366;
         }
 
-        input[type="text"] {
+        .input-group input {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             border: 1px solid #ccc;
-            border-radius: 6px;
+            border-radius: 8px;
             font-size: 14px;
             transition: 0.3s;
+            outline: none;
+        }
+
+        .input-group input:focus {
+            border-color: #5A9BD5;
+            box-shadow: 0 0 8px rgba(90, 155, 213, 0.3);
+        }
+
+        /* Button Styling */
+        .button-wrap {
+            display: flex;
+            justify-content: center;
+            margin-top: 15px;
         }
 
         .box2 button {
-            background: #1d5981;
+            background: #003366;
             border: none;
             color: white;
-            padding: 12px 20px;
-            font-size: 15px;
+            padding: 14px 20px;
+            font-size: 16px;
             font-weight: bold;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
             width: 100%;
             transition: 0.3s;
         }
 
         .box2 button:hover {
-            background: #16608a;
+            background: #5A9BD5;
+            transform: translateY(-2px);
         }
     </style>
 </head>
@@ -101,7 +127,7 @@
     </div>
 
     <div class="box2">
-        <h3>Upload Details</h3>
+        <h3>Upload Your Details</h3>
         <form action="{{ url_for('upload') }}" method="POST">
             <div class="input-group">
                 <label>Name</label>
@@ -123,7 +149,9 @@
                 <input type="text" name="empid" required>
             </div>
 
-            <button type="submit">Submit</button>
+            <div class="button-wrap">
+                <button type="submit">Submit</button>
+            </div>
         </form>
     </div>
 
