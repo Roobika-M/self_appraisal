@@ -6,10 +6,6 @@
     <title>Download File | KITE</title>
     <style>
         @import url('https://rsms.me/inter/inter-ui.css');
-        
-        ::selection { background: #2D2F36; }
-        ::-webkit-selection { background: #2D2F36; }
-        ::-moz-selection { background: #2D2F36; }
 
         body {
             background: white;
@@ -27,17 +23,9 @@
             display: flex;
             flex-direction: column;
             height: calc(100% - 40px);
+            width: calc(100% - 40px);
             position: absolute;
             place-content: center;
-            width: calc(100% - 40px);
-        }
-
-        @media (max-width: 767px) {
-            .page {
-                height: auto;
-                margin-bottom: 20px;
-                padding-bottom: 20px;
-            }
         }
 
         .container {
@@ -45,14 +33,6 @@
             height: 300px;
             margin: 0 auto;
             width: 700px;
-        }
-
-        @media (max-width: 767px) {
-            .container {
-                flex-direction: column;
-                height: auto;
-                width: 320px;
-            }
         }
 
         .left {
@@ -89,34 +69,6 @@
             align-items: center;
             background: #474A59;
         }
-        html, body {
-            overflow: hidden;
-            height: 100%;
-            margin: 0;
-            padding: 0;
-        }
-        
-        @media (max-width: 767px) {
-            .right {
-                width: 100%;
-                height: auto;
-                max-height: none;
-            }
-        }
-
-        .form {
-            margin: 0 auto;
-            width: 80%;
-            max-width: 320px;
-        }
-
-        label {
-            color: #c2c2c5;
-            display: block;
-            font-size: 14px;
-            margin-top: 20px;
-            margin-bottom: 5px;
-        }
 
         .button-wrap {
             display: flex;
@@ -144,6 +96,18 @@
         .download-btn:hover {
             background: rgba(255, 255, 255, 0.2);
         }
+
+        @media (max-width: 767px) {
+            .container {
+                flex-direction: column;
+                width: 90%;
+                height: auto;
+            }
+            .left, .right {
+                width: 100%;
+                text-align: center;
+            }
+        }
     </style>
 </head>
 <body>
@@ -151,18 +115,12 @@
         <div class="container">
             <div class="left">
                 <div class="login">Download File</div>
-                <div class="eula">click the button to download your file.</div>
+                <div class="eula">Click the button below to download your file.</div>
             </div>
             <div class="right">
-                <div class="form">
-                    <div class="button-wrap">
-                        <button type="button" class="download-btn" onclick="window.location.href='{{ url_for('download') }}'">
-                            Click Here
-                        </button>
-                        <button type="button" class="download-btn" onclick="window.location.href='{{ url_for('upload') }}'">
-                            Back to details
-                        </button>
-                    </div>
+                <div class="button-wrap">
+                    <a class="download-btn" href="{{ url_for('download') }}">Click Here</a>
+                    <a class="download-btn" href="{{ url_for('upload') }}">Back to details</a>
                 </div>
             </div>
         </div>
