@@ -3,125 +3,196 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Upload Details | KITE</title>
     <style>
-        .box1 {
-            background: linear-gradient(to bottom, 
-                          rgba(0, 0, 0, 0), 
-                          rgba(0, 0, 0, 0.5));
-            background-color: #1d5981;
-            width: 96%;
-            text-align: left;
-            position: absolute;
-            top: 1%;
-            border-radius: 8px;
-            padding: 20px;
-            color: #ddd;
-            height: 30px;
-        }
-        .box2 {
-            background: rgba(255, 255, 255, 0.2); /* Transparent white */
-            backdrop-filter: blur(3px); /* Apply blur effect */
-            padding: 30px;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-radius: 12px;
-            
-            width: 320px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            font-family: Arial;
-        }
-        .button-wrap {
-            display: flex;
-            justify-content: center;
-            margin-top: 10px;
-        }
-        .box2 button {
-            background-color: white;
-            border: none;
-            color: black;
-            padding: 14px 20px;
-            text-align: center;
-            font-size: 13px;
-            margin: 4px 2px;
-            transition: 0.3s;
-            border-radius: 10%;
-        }
-        .box2 button:hover {
-            background-color: #1d5981;
-            color: white;
-        }
-        .sign-up-link {
-            float: right;
-            text-decoration: none;
-            color: #ddd;
-            padding-right: 5px;
-        }
+        @import url('https://rsms.me/inter/inter-ui.css');
+        
+        ::selection { background: #2D2F36; }
+        ::-webkit-selection { background: #2D2F36; }
+        ::-moz-selection { background: #2D2F36; }
+
         body {
-            background-image: url('/static/kite.jpeg');
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-            background-size: cover;
-            height: 100vh;
+            background: white;
+            font-family: 'Inter UI', sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .page {
+            background: #e2e2e5;
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            margin: 0;
-            overflow: hidden;
+            height: calc(100% - 40px);
+            position: absolute;
+            place-content: center;
+            width: calc(100% - 40px);
         }
-        .input-group {
+
+        @media (max-width: 767px) {
+            .page {
+                height: auto;
+                margin-bottom: 20px;
+                padding-bottom: 20px;
+            }
+        }
+
+        .container {
             display: flex;
+            height: 500px; /* Increased height */
+            margin: 0 auto;
+            width: 700px; /* Increased width */
+        }
+
+        @media (max-width: 767px) {
+            .container {
+                flex-direction: column;
+                height: auto;
+                width: 320px;
+            }
+        }
+
+        .left {
+            background: white;
+            height: calc(100% - 40px);
+            top: 20px;
+            position: relative;
+            width: 40%;
+            padding: 40px;
+        }
+
+        .login {
+            font-size: 50px;
+            font-weight: 900;
+        }
+
+        .eula {
+            color: #999;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .right {
+            width: 60%;
+            min-height: 500px; /* Increased height */
+            padding: 40px;
+            box-shadow: 0px 0px 40px 16px rgba(0,0,0,0.22);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start; /* Align form to top */
             align-items: center;
-            margin-bottom: 15px;
+            background: #474A59;
+            position: relative;
         }
 
-        .input-group h4 {
-            margin: 0;
-            width: 30%; /* Adjust label width */
+        @media (max-width: 767px) {
+            .right {
+                width: 100%;
+                height: auto;
+                max-height: none;
+            }
         }
 
-        input[type="text"] {
-            flex: 1;
-            padding: 5px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+        .form {
+            margin: 0 auto;
+            position: absolute;
+            width: 80%;
+            max-width: 320px;
         }
+
+        label {
+            color: #c2c2c5;
+            display: block;
+            font-size: 14px;
+            margin-top: 20px;
+            margin-bottom: 5px;
+        }
+
+        /* Fully Transparent Input Fields */
+        input {
+            background: transparent; /* No background */
+            color: white; /* Change text color to white */
+            border: none;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.5); /* Bottom border only */
+            padding: 12px;
+            font-size: 18px;
+            width: 100%;
+            outline: none;
+            transition: border-color 0.3s ease-in-out;
+        }
+
+        input:focus, input:not(:placeholder-shown) {
+            background: transparent; /* Ensure background remains transparent */
+            color: white; /* Ensure text color remains white */
+        }
+
+        /* Submit Button */
+        #submit {
+            color: #fff;
+            background: transparent;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            border-radius: 12px;
+            padding: 12px 20px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 40px;
+            transition: all 0.3s ease;
+        }
+
+        #submit:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Fix for autofill background */
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover,
+        input:-webkit-autofill:focus,
+        textarea:-webkit-autofill,
+        textarea:-webkit-autofill:hover,
+        textarea:-webkit-autofill:focus,
+        select:-webkit-autofill,
+        select:-webkit-autofill:hover,
+        select:-webkit-autofill:focus {
+            background: transparent !important; /* Keep it transparent */
+            color: white !important; /* Ensure text remains visible */
+            -webkit-box-shadow: 0 0 0px 1000px #474A59 inset !important; /* Match background */
+            transition: background-color 5000s ease-in-out 0s;
+        }
+
     </style>
 </head>
 <body>
-    <div class="box1">
-        <b><p style="display: inline; padding-left: 5px;">KITE</p></b>
-        <a href="#" class="sign-up-link">Edit</a>
-    </div>
-    <div class="box2">
-    <form action="{{ url_for('upload') }}" method="POST">
-        <div class="input-group">
-            <h4>Name</h4>
-            <input type="text" name="name" placeholder="Enter your name" required>
-        </div>
-    
-        <div class="input-group">
-            <h4>Designation</h4>
-            <input type="text" name="designation" placeholder="Designation" required>
-        </div>
 
-        <div class="input-group">
-            <h4>Department</h4>
-            <input type="text" name="dept" placeholder="Department" required>
+    <div class="page">
+        <div class="container">
+            <div class="left">
+                <div class="login">Upload Details</div>
+                <div class="eula">fill in your details to proceed.</div>
+            </div>
+            <div class="right">
+                <div class="form">
+                    <form action="{{ url_for('upload') }}" method="POST">
+                        <div class="input-group">
+                            <label for="name">Name</label>
+                            <input type="text" id="name" name="name" placeholder="Enter your name" required>
+                        </div>
+                        <div class="input-group">
+                            <label for="designation">Designation</label>
+                            <input type="text" id="designation" name="designation" placeholder="Enter your designation" required>
+                        </div>
+                        <div class="input-group">
+                            <label for="department">Department</label>
+                            <input type="text" id="department" name="dept" placeholder="Enter your department" required>
+                        </div>
+                        <div class="input-group">
+                            <label for="empid">Employee ID</label>
+                            <input type="text" id="empid" name="empid" placeholder="Enter your Employee ID" required>
+                        </div>
+                        <input type="submit" id="submit" value="Submit">
+                    </form>
+                </div>
+            </div>
         </div>
-
-        <div class="input-group">
-            <h4>Employee ID</h4>
-            <input type="text" name="empid" placeholder="Employee" required>
-        </div>
-    <div class="button-wrap" style="align-items: center;">
-        <button type="submit">submit</button>
     </div>
-    {% if error %}
-    <p style="color: red;">{{ error }}</p>
-    {% endif %}
-    </form>
-    
-</div>
+
 </body>
 </html>
