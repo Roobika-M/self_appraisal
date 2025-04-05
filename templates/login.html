@@ -3,9 +3,136 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Login</title>
     <style>
-        /* Styling the header section */
+        /* Sample Code CSS */
+        @import url('https://rsms.me/inter/inter-ui.css');
+        ::selection {
+            background: #2D2F36;
+        }
+        ::-webkit-selection {
+            background: #2D2F36;
+        }
+        ::-moz-selection {
+            background: #2D2F36;
+        }
+        body {
+            background: white;
+            font-family: 'Inter UI', sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        .page {
+            background: #e2e2e5;
+            display: flex;
+            flex-direction: column;
+            height: calc(100% - 40px);
+            position: absolute;
+            place-content: center;
+            width: calc(100% - 40px);
+        }
+        @media (max-width: 767px) {
+            .page {
+                height: auto;
+                margin-bottom: 20px;
+                padding-bottom: 20px;
+            }
+        }
+        .container {
+            display: flex;
+            height: 320px;
+            margin: 0 auto;
+            width: 640px;
+        }
+        @media (max-width: 767px) {
+            .container {
+                flex-direction: column;
+                height: 630px;
+                width: 320px;
+            }
+        }
+        .left {
+            background: white;
+            height: calc(100% - 40px);
+            top: 20px;
+            position: relative;
+            width: 50%;
+        }
+        @media (max-width: 767px) {
+            .left {
+                height: 100%;
+                left: 20px;
+                width: calc(100% - 40px);
+                max-height: 270px;
+            }
+        }
+        .login {
+            font-size: 50px;
+            font-weight: 900;
+            margin: 50px 40px 40px;
+        }
+        .eula {
+            color: #999;
+            font-size: 14px;
+            line-height: 1.5;
+            margin: 40px;
+        }
+        .right {
+            background: #474A59;
+            box-shadow: 0px 0px 40px 16px rgba(0,0,0,0.22);
+            color: #F1F1F2;
+            position: relative;
+            width: 50%;
+        }
+        @media (max-width: 767px) {
+            .right {
+                flex-shrink: 0;
+                height: 100%;
+                width: 100%;
+                max-height: 350px;
+            }
+        }
+        svg {
+            position: absolute;
+            width: 320px;
+        }
+        path {
+            fill: none;
+            stroke: url(#linearGradient);
+            stroke-width: 4;
+            stroke-dasharray: 240 1386;
+        }
+        .form {
+            margin: 40px;
+            position: absolute;
+        }
+        label {
+            display: block;
+            font-size: 14px;
+            height: 16px;
+            margin-top: 20px;
+            margin-bottom: 5px;
+        }
+        input {
+            background: transparent;
+            border: 0;
+            font-size: 20px;
+            height: 30px;
+            line-height: 30px;
+            outline: none !important;
+            width: 100%;
+            border-radius: 6px;
+        }
+        input::-moz-focus-inner { 
+            border: 0; 
+        }
+        #submit {
+            color: #707075;
+            margin-top: 40px;
+            transition: color 300ms;
+        }
+
+        /* Original Code Adjustments */
         .box1 {
             background: linear-gradient(to bottom, 
                           rgba(0, 0, 0, 0), 
@@ -19,76 +146,8 @@
             padding: 20px;
             color: #ddd;
             height: 30px;
+            z-index: 10;
         }
-
-        body {
-            background-image: url('/static/kite.jpeg');
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-            background-size: cover;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            margin: 0;
-            overflow: hidden;
-        }
-
-        .box2 {
-            background: rgba(255, 255, 255, 0.2); /* Transparent white */
-            backdrop-filter: blur(3px); /* Apply blur effect */
-            padding: 30px;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-radius: 12px;
-            width: 320px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            font-family: Arial;
-        }
-
-        /* Flex container for input and label */
-
-        .button-wrap {
-            display: flex;
-            justify-content: center;
-            margin-top: 10px;
-        }
-
-        .box2 button {
-            background-color: white;
-            border: none;
-            color: black;
-            padding: 14px 20px;
-            text-align: center;
-            font-size: 13px;
-            margin: 4px 2px;
-            transition: 0.3s;
-            border-radius: 10%;
-        }
-        .box2 button:hover {
-            background-color: #1d5981;
-            color: white;
-        }
-
-        .input-group {
-            display: flex;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-
-        .input-group h4 {
-            margin: 0;
-            width: 30%; /* Adjust label width */
-        }
-
-        input[type="text"], input[type="password"] {
-            flex: 1;
-            padding: 5px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-
-        /* Link alignment */
         .sign-up-link {
             float: right;
             text-decoration: none;
@@ -97,39 +156,105 @@
     </style>
 </head>
 <body>
-    <!-- Header Section -->
-    <div class="box1">
-        <b><p style="display: inline;">KITE</p></b>
-        <a href="{{ url_for('data') }}" class="sign-up-link">NEW</a>
-    </div>
-    <div class="box2">
-    <!-- Login Section -->
-    <h3 style="text-align: center;">LOG IN</h3>
-    <form action="{{ url_for('login') }}" method="POST" autocomplete="off">
-        <div class="input-group">
-            <h4>User ID:</h4>
-            <input type="text" name="username" placeholder="Enter your username" autocomplete="off">
+    <!-- Sample Code Structure -->
+    <div class="page">
+        <div class="container">
+            <div class="left">
+                <div class="login">Login</div>
+                <div class="eula">SELF-APPRAISAL</div>
+            </div>
+            <div class="right">
+                <svg viewBox="0 0 320 300">
+                    <defs>
+                        <linearGradient
+                            inkscape:collect="always"
+                            id="linearGradient"
+                            x1="13"
+                            y1="193.49992"
+                            x2="307"
+                            y2="193.49992"
+                            gradientUnits="userSpaceOnUse">
+                            <stop
+                                style="stop-color:#ff00ff;"
+                                offset="0"
+                                id="stop876" />
+                            <stop
+                                style="stop-color:#ff0000;"
+                                offset="1"
+                                id="stop878" />
+                        </linearGradient>
+                    </defs>
+                    <path d="m 40,120.00016 239.99984,-3.2e-4 c 0,0 24.99263,0.79932 25.00016,35.00016 0.008,34.20084 -25.00016,35 -25.00016,35 h -239.99984 c 0,-0.0205 -25,4.01348 -25,38.5 0,34.48652 25,38.5 25,38.5 h 215 c 0,0 20,-0.99604 20,-25 0,-24.00396 -20,-25 -20,-25 h -190 c 0,0 -20,1.71033 -20,25 0,24.00396 20,25 20,25 h 168.57143" />
+                </svg>
+                <div class="form">
+                    <!-- Original Form -->
+                    <form action="{{ url_for('login') }}" method="POST" autocomplete="off">
+                        <label for="username">User ID:</label>
+                        <input type="text" id="username" name="username" placeholder="Enter your username" autocomplete="off">
+                        <label for="password">Password:</label>
+                        <input type="password" id="password" name="password" placeholder="Enter password">
+                        <input type="submit" id="submit" value="Log in">
+                        {% if error %}
+                        <p style="color: red;">{{ error }}</p>
+                        {% endif %}
+                    </form>
+                </div>
+            </div>
         </div>
+    </div>
 
-        <div class="input-group">
-            <h4>Password:</h4>
-            <input type="password" name="password" placeholder="Enter password">
-        </div>
-    
-        <div class="button-wrap" style="align-items: center;">
-        <button type="submit">Log in</button>
-        </div>
-        {% if error %}
-        <p style="color: red;">{{ error }}</p>
-        {% endif %}
-    </form>
-    
-    </div>
+    <!-- Sample Code JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
     <script>
-        window.onload = function() {
-            document.getElementsByName("username")[0].value = "";
-            document.getElementsByName("password")[0].value = "";
-        };
+        var current = null;
+        document.querySelector('#username').addEventListener('focus', function(e) {
+            if (current) current.pause();
+            current = anime({
+                targets: 'path',
+                strokeDashoffset: {
+                    value: 0,
+                    duration: 700,
+                    easing: 'easeOutQuart'
+                },
+                strokeDasharray: {
+                    value: '240 1386',
+                    duration: 700,
+                    easing: 'easeOutQuart'
+                }
+            });
+        });
+        document.querySelector('#password').addEventListener('focus', function(e) {
+            if (current) current.pause();
+            current = anime({
+                targets: 'path',
+                strokeDashoffset: {
+                    value: -336,
+                    duration: 700,
+                    easing: 'easeOutQuart'
+                },
+                strokeDasharray: {
+                    value: '240 1386',
+                    duration: 700,
+                    easing: 'easeOutQuart'
+                }
+            });
+        });
+        document.querySelector('#submit').addEventListener('focus', function(e) {
+            if (current) current.pause();
+            current = anime({
+                targets: 'path',
+                strokeDashoffset: {
+                    value: -730,
+                    duration: 700,
+                    easing: 'easeOutQuart'
+                },
+                strokeDasharray: {
+                    value: '530 1386',
+                    duration: 700,
+                    easing: 'easeOutQuart'
+                }
+            });
+        });
     </script>
 </body>
 </html>
