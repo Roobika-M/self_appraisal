@@ -1,171 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Download File | KITE</title>
-    <style>
-        @import url('https://rsms.me/inter/inter-ui.css');
-        
-        ::selection { background: #2D2F36; }
-        ::-webkit-selection { background: #2D2F36; }
-        ::-moz-selection { background: #2D2F36; }
+{% extends "base.html" %}
 
-        body {
-            background: white;
-            font-family: 'Inter UI', sans-serif;
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
+{% block title %}Download File | KITE{% endblock %}
 
-        .page {
-            background: #e2e2e5;
-            display: flex;
-            flex-direction: column;
-            height: calc(100% - 40px);
-            position: absolute;
-            place-content: center;
-            width: calc(100% - 40px);
-        }
+{% block header_title %}DOWNLOAD FILE{% endblock %}
 
-        @media (max-width: 767px) {
-            .page {
-                height: auto;
-                margin-bottom: 20px;
-                padding-bottom: 20px;
-            }
-        }
+{% block page_title %}Download File{% endblock %}
 
-        .container {
-            display: flex;
-            height: 300px;
-            margin: 0 auto;
-            width: 700px;
-        }
+{% block subtitle %}Click the button to download your file.{% endblock %}
 
-        @media (max-width: 767px) {
-            .container {
-                flex-direction: column;
-                height: auto;
-                width: 320px;
-            }
-        }
+{% block svg_animation %}{% endblock %}
 
-        .left {
-            background: white;
-            height: calc(100% - 40px);
-            top: 20px;
-            position: relative;
-            width: 40%;
-            padding: 40px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        .login {
-            font-size: 50px;
-            font-weight: 900;
-        }
-
-        .eula {
-            color: #999;
-            font-size: 14px;
-            line-height: 1.5;
-        }
-
-        .right {
-            width: 60%;
-            min-height: 300px;
-            padding: 40px;
-            box-shadow: 0px 0px 40px 16px rgba(0,0,0,0.22);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            background: #474A59;
-        }
-        html, body {
-            overflow: hidden;
-            height: 100%;
-            margin: 0;
-            padding: 0;
-        }
-        
-        @media (max-width: 767px) {
-            .right {
-                width: 100%;
-                height: auto;
-                max-height: none;
-            }
-        }
-
-        .form {
-            margin: 0 auto;
-            width: 80%;
-            max-width: 320px;
-        }
-
-        label {
-            color: #c2c2c5;
-            display: block;
-            font-size: 14px;
-            margin-top: 20px;
-            margin-bottom: 5px;
-        }
-
-        .button-wrap {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            margin-top: 15px;
-        }
-
-        .download-btn {
-            color: #fff;
-            background: transparent;
-            border: 2px solid rgba(255, 255, 255, 0.5);
-            border-radius: 12px;
-            padding: 12px 20px;
-            cursor: pointer;
-            font-size: 16px;
-            margin-top: 20px;
-            transition: all 0.3s ease;
-            width: 100%;
-            text-decoration: none;
-            text-align: center;
-        }
-
-        .download-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
-    </style>
-</head>
-<body>
-    <div class="page">
-        <div class="container">
-            <div class="left">
-                <div class="login">Download File</div>
-                <div class="eula">click the button to download your file.</div>
-            </div>
-            <div class="right">
-                <div class="form">
-                    <div class="button-wrap">
-                        <button type="button" class="download-btn" onclick="window.location.href='{{ url_for('download') }}'">
-                            Click Here
-                        </button>
-                        <button type="button" class="download-btn" onclick="window.location.href='{{ url_for('upload') }}'">
-                            Back to details
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</body>
-</html>
+{% block content %}
+<div class="button-wrap" style="text-align: center;">
+    <button type="button" class="button" onclick="window.location.href='{{ url_for('download') }}'">
+        Click Here
+    </button>
+    <button type="button" class="button" onclick="window.location.href='{{ url_for('upload') }}'">
+        Back to details
+    </button>
+</div>
+{% endblock %}
