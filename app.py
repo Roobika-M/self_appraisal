@@ -5,7 +5,12 @@ import logging
 import os
 import pandas as pd
 from docx import Document
+from docx2pdf import convert
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
 from docx.shared import Pt
+import pythoncom
+import win32com.client
 from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
 
 app = Flask(__name__)
@@ -148,17 +153,46 @@ def data():
 '''logging.basicConfig()
 logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)'''
 
+@app.route('/download/<file_type>', methods=['GET'])
+def download(file_type):
+    upload_folder = os.getcwd()  # Get current working directory
+    docx_filename = os.path.join(upload_folder, "filled_template.docx")
+    pdf_filename = os.path.join(upload_folder, "filled_template.pdf")
 
+    if file_type == "docx":
+        if not os.path.exists(docx_filename):
+            return "File not found", 404
+        return send_file(docx_filename, as_attachment=True)
 
-@app.route('/download', methods=['GET'])
-def download():
-    filename = os.path.join(os.getcwd(), "filled_template.docx")
-    return send_file(filename, as_attachment=True)
+    elif file_type == "pdf":
+        convert_docx_to_pdf(docx_filename, pdf_filename)
+        if not os.path.exists(pdf_filename):
+            return "PDF conversion failed", 500
+        return send_file(pdf_filename, as_attachment=True)
+
+    return "Invalid file type", 400
 
 @app.route('/download_path')
 def download_path():
     return render_template("download.html")
 
+
+def convert_docx_to_pdf(docx_path, pdf_path):
+    pythoncom.CoInitialize()  # Fixes COM error
+    word = win32com.client.Dispatch("Word.Application")
+    word.Visible = False  # Run in background
+
+    try:
+        docx_path = os.path.abspath(docx_path)  # Ensure absolute path
+        pdf_path = os.path.abspath(pdf_path)  # Ensure absolute path
+        doc = word.Documents.Open(docx_path)
+        doc.SaveAs(pdf_path, FileFormat=17)  # Convert DOCX to PDF
+        doc.Close()
+    except Exception as e:
+        print(f"❌ Error: {e}")
+    finally:
+        word.Quit()  # Close Word
+        pythoncom.CoUninitialize()  # Clean up COM
 
 #################################### Load the Excel file
 # Load the Word document

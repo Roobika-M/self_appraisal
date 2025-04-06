@@ -108,6 +108,46 @@
                 text-align: center;
             }
         }
+        .preview-btn {
+            background: transparent;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            border-radius: 8px;
+            padding: 10px 20px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px 0;
+            transition: all 0.3s ease;
+            width: 100%;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .preview-btn:hover{
+            background: rgba(255, 255, 255, 0.2);
+        }
+        #filePreview {
+            display: none; /* Hidden until preview button is clicked */
+            width: 100%;
+            max-height: 200px;
+            overflow: auto;
+            background: white;
+            color: black;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        @media (max-width: 767px) {
+            .page {
+                flex-direction: column;
+                max-width: 90%;
+            }
+            .left, .right {
+                width: 100%;
+            }
+        }
     </style>
 </head>
 <body>
@@ -119,11 +159,39 @@
             </div>
             <div class="right">
                 <div class="button-wrap">
-                    <a class="download-btn" href="{{ url_for('download') }}">Click Here</a>
+                    <a class="download-btn" onclick="downloadFile('docx')">Download DOCX</a>
+                    <a class="download-btn" onclick="downloadFile('pdf')">Download PDF</a>
                     <a class="download-btn" href="{{ url_for('upload') }}">Back to details</a>
                 </div>
             </div>
         </div>
     </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.2/mammoth.browser.min.js"></script>
+    <script>
+        function previewWordFile() {
+            document.getElementById("filePreview").style.display = "block"; // Show preview area
+            fetch("/download/preview")
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Preview file not found.");
+                    }
+                    return response.arrayBuffer();
+                })
+                .then(data => {
+                    mammoth.convertToHtml({ arrayBuffer: data })
+                        .then(result => {
+                            document.getElementById("filePreview").innerHTML = result.value || "<p>Unable to preview file.</p>";
+                        })
+                        .catch(error => console.error("Error converting DOCX:", error));
+                })
+                .catch(error => {
+                    document.getElementById("filePreview").innerHTML = "<p>File preview not available.</p>";
+                    console.error(error);
+                });
+        }
+        function downloadFile(type) {
+            window.location.href = `/download/${type}`;
+        }        
+    </script>
 </body>
 </html>
