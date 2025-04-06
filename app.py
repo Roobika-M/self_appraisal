@@ -174,7 +174,8 @@ def download(file_type):
 
 @app.route('/download_path')
 def download_path():
-    return render_template("download.html")
+    global staffname, m, n
+    return render_template("download.html", name=staffname, m=m, n=n)
 
 
 def convert_docx_to_pdf(docx_path, pdf_path):
@@ -200,6 +201,9 @@ def processing(excel_path,staffname):
     doc_path = "template.docx"
     doc = Document(doc_path)
     name = staffname
+    global m, n  # Declare m and n as global variables
+    m = 0
+    n = 0
 ######################################################################################################
     df_journal = pd.read_excel(excel_path, sheet_name="Journal Publication", skiprows=5)
 

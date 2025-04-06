@@ -77,6 +77,7 @@
             align-items: center;
             margin-top: 15px;
             width: 100%;
+            position: relative;
         }
 
         .download-btn {
@@ -99,13 +100,18 @@
             background: rgba(255, 255, 255, 0.2);
         }
 
+        /* Fix for dropdown - Ensure it shows on hover */
+        .download-btn {
+            position: relative;
+        }
+
         .dropdown {
             display: none;
             position: absolute;
             background: #474A59;
             border: 2px solid rgba(255, 255, 255, 0.5);
             border-radius: 8px;
-            min-width: 13px;
+            min-width: 150px;
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
             z-index: 1;
             top: 100%;
@@ -150,7 +156,7 @@
         }
 
         #filePreview {
-            display: none; /* Hidden until preview button is clicked */
+            display: none;
             width: 100%;
             max-height: 200px;
             overflow: auto;
@@ -184,29 +190,37 @@
         <div class="container">
             <div class="left">
                 <div class="login">Download File</div>
-                <div class="eula">Click the button below to download your file.</div>
+                <div class="eula">
+                    Hello, {{ name }}! <br>
+                    Total Score (m): {{ m }} <br>
+                    Additional Score (n): {{ n }}
+                </div>
             </div>
             <div class="right">
                 <div class="button-wrap">
-                    <button class="download-btn" onclick="previewWordFile()">Preview</button>
+                    <button class="preview-btn" onclick="previewWordFile()">Preview</button>
                     <div id="filePreview">
                         <p>No file preview available yet.</p>
                     </div>
-                    <div class="download-btn">Download
+
+                    <div class="download-btn">
+                        Download
                         <div class="dropdown">
                             <a onclick="downloadFile('docx')">Download as Word</a>
                             <a onclick="downloadFile('pdf')">Download as PDF</a>
                         </div>
                     </div>
+
                     <a class="download-btn" href="{{ url_for('upload') }}">Back to details</a>
                 </div>
             </div>
         </div>
     </div>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.2/mammoth.browser.min.js"></script>
     <script>
         function previewWordFile() {
-            document.getElementById("filePreview").style.display = "block"; // Show preview area
+            document.getElementById("filePreview").style.display = "block";
             fetch("/download/preview")
                 .then(response => {
                     if (!response.ok) {
@@ -228,7 +242,7 @@
         }
 
         function downloadFile(type) {
-            window.location.href = `/download/${type}`; // Dynamic URL with file type
+            window.location.href = `/download/${type}`;
         }
     </script>
 </body>
