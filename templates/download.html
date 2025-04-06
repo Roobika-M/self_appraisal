@@ -1,22 +1,129 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Download File | KITE</title>
+    <style>
+        @import url('https://rsms.me/inter/inter-ui.css');
 
-{% block title %}Download File | KITE{% endblock %}
+        body {
+            background: white;
+            font-family: 'Inter UI', sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
 
-{% block header_title %}DOWNLOAD FILE{% endblock %}
+        .page {
+            background: #e2e2e5;
+            display: flex;
+            flex-direction: column;
+            height: calc(100% - 40px);
+            width: calc(100% - 40px);
+            position: absolute;
+            place-content: center;
+        }
 
-{% block page_title %}Download File{% endblock %}
+        .container {
+            display: flex;
+            height: 300px;
+            margin: 0 auto;
+            width: 700px;
+        }
 
-{% block subtitle %}Click the button to download your file.{% endblock %}
+        .left {
+            background: white;
+            height: calc(100% - 40px);
+            top: 20px;
+            position: relative;
+            width: 40%;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
 
-{% block svg_animation %}{% endblock %}
+        .login {
+            font-size: 50px;
+            font-weight: 900;
+        }
 
-{% block content %}
-<div class="button-wrap" style="text-align: center;">
-    <button type="button" class="button" onclick="window.location.href='{{ url_for('download') }}'">
-        Click Here
-    </button>
-    <button type="button" class="button" onclick="window.location.href='{{ url_for('upload') }}'">
-        Back to details
-    </button>
-</div>
-{% endblock %}
+        .eula {
+            color: #999;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .right {
+            width: 60%;
+            min-height: 300px;
+            padding: 40px;
+            box-shadow: 0px 0px 40px 16px rgba(0,0,0,0.22);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: #474A59;
+        }
+
+        .button-wrap {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin-top: 15px;
+        }
+
+        .download-btn {
+            color: #fff;
+            background: transparent;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            border-radius: 12px;
+            padding: 12px 20px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+            width: 100%;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .download-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        @media (max-width: 767px) {
+            .container {
+                flex-direction: column;
+                width: 90%;
+                height: auto;
+            }
+            .left, .right {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <div class="container">
+            <div class="left">
+                <div class="login">Download File</div>
+                <div class="eula">Click the button below to download your file.</div>
+            </div>
+            <div class="right">
+                <div class="button-wrap">
+                    <a class="download-btn" href="{{ url_for('download') }}">Click Here</a>
+                    <a class="download-btn" href="{{ url_for('upload') }}">Back to details</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

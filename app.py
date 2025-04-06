@@ -59,26 +59,53 @@ def login():
             return render_template('login.html', error=error)
 
     return render_template('login.html')
-staffname=''
-detaillist=[]
-# Upload page
-@app.route('/upload', methods=['POST','GET'])
+staffname = ''
+detaillist = []
+excel_path = ''
+
+@app.route('/upload', methods=['POST', 'GET'])
 def upload():
-    global detaillist
-    if request.method == 'POST':  # Corrected handling of form submission
+    global staffname, detaillist, excel_path
+
+    if request.method == 'POST':
+        print("🚀 Form submitted!")  # Debugging
+        
+        # Get form data
         name = request.form.get('name')
         designation = request.form.get('designation')
         department = request.form.get('dept')
         emp_id = request.form.get('empid')
 
-        global staffname
-        staffname=name
+        # Validate form data
         if not all([name, designation, department, emp_id]):
-            error = "Please enter correct username and password."
-            return render_template('upload.html', error=error)
-        detaillist=[name,designation,department,emp_id]
+            print("⚠️ Missing form data!")  # Debugging
+            return render_template('upload.html', error="Please fill in all details.")
 
-        return redirect(url_for('excel'))  
+        staffname = name
+        detaillist = [name, designation, department, emp_id]
+
+        # Get uploaded file
+        file = request.files.get('excel_file')
+        if not file or file.filename == '':
+            print("⚠️ No file uploaded!")  # Debugging
+            return render_template('upload.html', error="Please upload an Excel file.")
+
+        # Save the file
+        upload_folder = os.getcwd()
+        file_path = os.path.join(upload_folder, file.filename)
+        file.save(file_path)
+
+        excel_path = file.filename
+        print(f"📂 File saved at: {file_path}")  # Debugging
+
+        try:
+            processing(excel_path, staffname)
+        except Exception as e:
+            print(f"❌ Error processing file: {e}")  # Debugging
+            return render_template('upload.html', error="Error processing file.")
+
+        print("✅ Redirecting to download page...")  # Debugging
+        return redirect(url_for("download_path"))
 
     return render_template('upload.html')
     
@@ -121,44 +148,16 @@ def data():
 '''logging.basicConfig()
 logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)'''
 
-excel_path=''
-@app.route('/excel', methods=['POST', 'GET'])
-def excel():
-    if request.method == 'POST':  # Fixed handling (was incorrectly checking GET)
-        file = request.files.get('excel_file')
-
-        if not file or file.filename == '':
-            error = "Please upload the file."
-            return render_template('excel.html', error=error)
-
-        upload_folder = os.getcwd()
-        app.config['UPLOAD_FOLDER'] = upload_folder
-        file_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
-        file.save(file_path)
-
-        global staffname
-
-        name=staffname
-        global excel_path
-        excel_path=file.filename
-        processing(excel_path,name)
-
-        # flash(f"File {file.filename} successfully uploaded!", "success")
-        return redirect(url_for("download_path"))
-
-    return render_template('excel.html')
 
 
-
-@app.route('/download', methods=['POST', 'GET'])
+@app.route('/download', methods=['GET'])
 def download():
-    filename=os.path.join(app.config['UPLOAD_FOLDER'],"filled_template.docx")
-    return send_file(filename,as_attachment=True)
+    filename = os.path.join(os.getcwd(), "filled_template.docx")
+    return send_file(filename, as_attachment=True)
 
 @app.route('/download_path')
 def download_path():
     return render_template("download.html")
-
 
 
 #################################### Load the Excel file
