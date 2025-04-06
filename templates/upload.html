@@ -124,6 +124,33 @@
             background: transparent; /* Ensure background remains transparent */
             color: white; /* Ensure text color remains white */
         }
+        .custom-file-upload {
+            display: inline-block;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 8px;
+            background-color:rgb(255, 255, 255);
+            color: black;
+            font-size: 14px;
+            margin-top: 5px;
+            transition: background-color 0.3s;
+        }
+        
+        .custom-file-upload:hover {
+            background-color: #c2c2c5;
+        }
+        
+        input[type="file"] {
+            display: none;
+        }
+        
+        .file-name {
+            color: #c2c2c5;
+            font-size: 14px;
+            margin-left: 10px;
+            display: inline-block;
+            margin-top: 10px;
+        }        
 
         /* Submit Button */
         #submit {
@@ -161,7 +188,6 @@
     </style>
 </head>
 <body>
-
     <div class="page">
         <div class="container">
             <div class="left">
@@ -189,13 +215,24 @@
                         </div>
                         <div class="input-group">
                             <label for="excel_file">Upload Excel File</label>
-                            <input type="file" id="excel_file" name="excel_file" accept=".xlsx, .xls" required>
-                        </div>
+                            <label class="custom-file-upload">
+                                <input type="file" id="excel_file" name="excel_file" accept=".xlsx, .xls" onchange="showFileName()" required>
+                                Choose File
+                            </label>
+                            <span class="file-name" id="file-name">No file chosen</span>
+                        </div>                        
                         <input type="submit" id="submit" value="Submit">
                     </form>
                 </div>
             </div>
         </div>
     </div>
+    <script>
+        function showFileName() {
+          const input = document.getElementById('excel_file');
+          const fileName = document.getElementById('file-name');
+          fileName.textContent = input.files.length > 0 ? input.files[0].name : "No file chosen";
+        }
+      </script>      
 </body>
 </html>
