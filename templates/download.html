@@ -235,7 +235,9 @@
         .selfm-score {
             background-color: #2196f3; /* Blue */
         }
-
+        .mentor-score {
+            background-color: #f44336; /* Red */
+        }
         .total-score {
             background-color: #ff9800; /* Orange */
         }
@@ -295,6 +297,10 @@
                 <div class="stats-item">
                     <span class="label"><i class="fas fa-user-graduate"></i> Self-Improvement Score:</span>
                     <span class="score selfm-score">{{ selfm }}</span>
+                    <div class="stats-item">
+                        <span class="label"><i class="fas fa-star"></i> Student mentorship Score:</span>
+                        <span class="score mentor-score">{{ mentor }}</span>
+                    </div>
                 </div>
                 <div class="stats-item">
                     <span class="label"><i class="fas fa-star"></i> Total Score:</span>

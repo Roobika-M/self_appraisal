@@ -174,9 +174,9 @@ def download(file_type):
 
 @app.route('/download_path')
 def download_path():
-    global staffname, research, selfm
-    total_score = research + selfm
-    return render_template("download.html", name=staffname, research=research, selfm=selfm, total_score=total_score)
+    global staffname, research, selfm, mentor
+    total_score = research + selfm + mentor
+    return render_template("download.html", name=staffname, research=research, selfm=selfm,mentor=mentor, total_score=total_score)
 
 
 def convert_docx_to_pdf(docx_path, pdf_path):
@@ -202,11 +202,12 @@ def processing(excel_path,staffname):
     doc_path = "template.docx"
     doc = Document(doc_path)
     name = staffname
-    global m, n, research,selfm  # Declare m and n as global variables
+    global m, n, research,selfm,mentor  # Declare m and n as global variables
     m = 0
     n = 0
     research = 0
     selfm = 0
+    mentor = 0
 ######################################################################################################
     df_journal = pd.read_excel(excel_path, sheet_name="Journal Publication", skiprows=5)
 
