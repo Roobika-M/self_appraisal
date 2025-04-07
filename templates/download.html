@@ -136,7 +136,7 @@
             background: rgba(255, 255, 255, 0.3);
         }
 
-        .preview-btn {
+        .btn {
             background: transparent;
             border: 2px solid rgba(255, 255, 255, 0.5);
             border-radius: 12px;
@@ -149,23 +149,95 @@
             width: 100%;
             text-align: center;
             text-decoration: none;
+            position: relative;
         }
 
-        .preview-btn:hover {
+        .btn:hover {
             background: rgba(255, 255, 255, 0.2);
         }
 
-        #filePreview {
-            display: none;
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
             width: 100%;
-            max-height: 200px;
+            height: 100%;
             overflow: auto;
-            background: white;
-            color: black;
-            padding: 15px;
+            background-color: rgba(0, 0, 0, 0.4); /* Black background with opacity */
+        }
+
+        /* Modal content */
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto; /* Center the modal */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 50%; /* Adjust the width */
             border-radius: 8px;
-            margin: 10px 0;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Close button */
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* Stats container */
+        .stats-container {
+            text-align: center;
+        }
+
+        .stats-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .stats-item {
+            font-size: 18px;
+            margin: 15px 0;
+            display: flex;
+            flex-direction: column; /* Stack label and score vertically */
+            align-items: center;
+        }
+
+        .stats-item .label {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px; /* Add spacing between label and score */
+        }
+
+        .stats-item .score {
+            font-size: 24px;
+            font-weight: bold;
+            padding: 5px 10px;
+            border-radius: 8px;
+            color: white;
+        }
+
+        .research-score {
+            background-color: #4caf50; /* Green */
+        }
+
+        .selfm-score {
+            background-color: #2196f3; /* Blue */
+        }
+
+        .total-score {
+            background-color: #ff9800; /* Orange */
         }
 
         @media (max-width: 767px) {
@@ -183,6 +255,7 @@
                 width: 100%;
             }
         }
+
     </style>
 </head>
 <body>
@@ -192,18 +265,11 @@
                 <div class="login">Download File</div>
                 <div class="eula">
                     Staff name:{{ name }} <br>
-                    Research score: {{ research }} <br>
-                    Self-improvement score: {{ selfm }} <br>
-                    Total Score: {{ total_score }}<br>
                 </div>
             </div>
             <div class="right">
                 <div class="button-wrap">
-                    <button class="preview-btn" onclick="previewWordFile()">Preview</button>
-                    <div id="filePreview">
-                        <p>No file preview available yet.</p>
-                    </div>
-
+                    <button class="btn" onclick="openStatsModal()">View Stats</button>
                     <div class="download-btn">
                         Download
                         <div class="dropdown">
@@ -217,34 +283,49 @@
             </div>
         </div>
     </div>
-
+    <div id="statsModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeStatsModal()">&times;</span>
+            <div class="stats-container">
+                <div class="stats-title">Staff Stats</div>
+                <div class="stats-item">
+                    <span class="label"><i class="fas fa-flask"></i> Research Score:</span>
+                    <span class="score research-score">{{ research }}</span>
+                </div>
+                <div class="stats-item">
+                    <span class="label"><i class="fas fa-user-graduate"></i> Self-Improvement Score:</span>
+                    <span class="score selfm-score">{{ selfm }}</span>
+                </div>
+                <div class="stats-item">
+                    <span class="label"><i class="fas fa-star"></i> Total Score:</span>
+                    <span class="score total-score">{{ total_score }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.2/mammoth.browser.min.js"></script>
     <script>
-        function previewWordFile() {
-            document.getElementById("filePreview").style.display = "block";
-            fetch("/download/preview")
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error("Preview file not found.");
-                    }
-                    return response.arrayBuffer();
-                })
-                .then(data => {
-                    mammoth.convertToHtml({ arrayBuffer: data })
-                        .then(result => {
-                            document.getElementById("filePreview").innerHTML = result.value || "<p>Unable to preview file.</p>";
-                        })
-                        .catch(error => console.error("Error converting DOCX:", error));
-                })
-                .catch(error => {
-                    document.getElementById("filePreview").innerHTML = "<p>File preview not available.</p>";
-                    console.error(error);
-                });
-        }
-
         function downloadFile(type) {
             window.location.href = `/download/${type}`;
         }
+        function openStatsModal() {
+            const modal = document.getElementById("statsModal");
+            modal.style.display = "block"; // Show the modal
+        }
+    
+        // Function to close the stats modal
+        function closeStatsModal() {
+            const modal = document.getElementById("statsModal");
+            modal.style.display = "none"; // Hide the modal
+        }
+    
+        // Close the modal when clicking outside of it
+        window.onclick = function(event) {
+            const modal = document.getElementById("statsModal");
+            if (event.target === modal) {
+                modal.style.display = "none";
+            }
+        };
     </script>
 </body>
 </html>
