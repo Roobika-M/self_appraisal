@@ -8,14 +8,12 @@
         @import url('https://rsms.me/inter/inter-ui.css');
 
         body {
-            background: white;
+            background: white;  /* White background for body */
             font-family: 'Inter UI', sans-serif;
             margin: 0;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            padding: 20px;  /* Add padding like other pages */
             height: 100vh;
+            overflow: hidden;
         }
 
         .page {
@@ -23,16 +21,17 @@
             display: flex;
             flex-direction: column;
             height: calc(100% - 40px);
-            width: calc(100% - 40px);
             position: absolute;
             place-content: center;
+            width: calc(100% - 40px);
         }
 
         .container {
             display: flex;
-            height: 300px;
+            height: 320px;
             margin: 0 auto;
-            width: 700px;
+            width: 640px;
+            background: transparent;  /* Make container background transparent */
         }
 
         .left {
@@ -157,29 +156,33 @@
         }
 
         .modal {
-            display: none; /* Hidden by default */
+            display: none;
             position: fixed;
             z-index: 1000;
             left: 0;
             top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0, 0, 0, 0.4); /* Black background with opacity */
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;  /* Change to hidden */
+            background-color: rgba(0, 0, 0, 0.4);
         }
 
-        /* Modal content */
         .modal-content {
             background-color: #fefefe;
-            margin: 15% auto; /* Center the modal */
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
             padding: 20px;
             border: 1px solid #888;
-            width: 50%; /* Adjust the width */
+            width: 50%;
+            max-width: 500px;  /* Add max-width */
+            max-height: 80vh;  /* Add max-height */
+            overflow-y: auto;  /* Allow scrolling inside modal if needed */
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
 
-        /* Close button */
         .close {
             color: #aaa;
             float: right;
@@ -195,23 +198,33 @@
             cursor: pointer;
         }
 
-        /* Stats container */
         .stats-container {
-            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px; /* Adds spacing between rows */
         }
-
+        
+        .stats-row {
+            display: flex;
+            justify-content: center;
+            gap: 20px; /* Space between items */
+            flex-wrap: wrap;
+        }
+        
+        .stats-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 10px;
+            min-width: 150px; /* Ensures consistent width */
+        }        
+        
         .stats-title {
             font-size: 24px;
             font-weight: bold;
             margin-bottom: 20px;
-        }
-
-        .stats-item {
-            font-size: 18px;
-            margin: 15px 0;
-            display: flex;
-            flex-direction: column; /* Stack label and score vertically */
-            align-items: center;
         }
 
         .stats-item .label {
@@ -227,7 +240,12 @@
             border-radius: 8px;
             color: white;
         }
-
+        .hod-score {
+            background-color:rgb(225, 77, 171); /* Green */
+        }
+        .academics-score {
+            background-color:rgb(193, 225, 77); /* Green */
+        }
         .research-score {
             background-color: #4caf50; /* Green */
         }
@@ -243,11 +261,18 @@
         }
 
         @media (max-width: 767px) {
+            .page {
+                height: auto;
+                margin-bottom: 20px;
+                padding-bottom: 20px;
+            }
+
             .container {
                 flex-direction: column;
-                width: 90%;
-                height: auto;
+                height: 630px;
+                width: 320px;
             }
+
             .left, .right {
                 width: 100%;
                 text-align: center;
@@ -255,6 +280,11 @@
             .dropdown {
                 position: static;
                 width: 100%;
+            }
+
+            .modal-content {
+                width: 90%;
+                max-height: 90vh;
             }
         }
 
@@ -290,23 +320,43 @@
             <span class="close" onclick="closeStatsModal()">&times;</span>
             <div class="stats-container">
                 <div class="stats-title">Staff Stats</div>
-                <div class="stats-item">
-                    <span class="label"><i class="fas fa-flask"></i> Research Score:</span>
-                    <span class="score research-score">{{ research }}</span>
-                </div>
-                <div class="stats-item">
-                    <span class="label"><i class="fas fa-user-graduate"></i> Self-Improvement Score:</span>
-                    <span class="score selfm-score">{{ selfm }}</span>
-                    <div class="stats-item">
-                        <span class="label"><i class="fas fa-star"></i> Student mentorship Score:</span>
-                        <span class="score mentor-score">{{ mentor }}</span>
+                <div class="stats-container">
+                    <!-- First Row -->
+                    <div class="stats-row">
+                        <div class="stats-item">
+                            <span class="label">Academics Score:</span>
+                            <span class="score academics-score">{{ academics }}</span>
+                        </div>
+                        <div class="stats-item">
+                            <span class="label">Research Score:</span>
+                            <span class="score research-score">{{ research }}</span>
+                        </div>
+                        <div class="stats-item">
+                            <span class="label">Self-Improvement Score:</span>
+                            <span class="score selfm-score">{{ selfm }}</span>
+                        </div>
                     </div>
-                </div>
-                <div class="stats-item">
-                    <span class="label"><i class="fas fa-star"></i> Total Score:</span>
-                    <span class="score total-score">{{ total_score }}</span>
-                </div>
-            </div>
+                
+                    <!-- Second Row -->
+                    <div class="stats-row">
+                        <div class="stats-item">
+                            <span class="label">Student Mentorship Score:</span>
+                            <span class="score mentor-score">{{ mentor }}</span>
+                        </div>
+                        <div class="stats-item">
+                            <span class="label">HOD Feedback Score:</span>
+                            <span class="score hod-score">{{ hod }}</span>
+                        </div>
+                    </div>
+                
+                    <!-- Third Row (Centered) -->
+                    <div class="stats-row">
+                        <div class="stats-item">
+                            <span class="label">Total Score:</span>
+                            <span class="score total-score">{{ total_score }}</span>
+                        </div>
+                    </div>
+                </div>                               
         </div>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.2/mammoth.browser.min.js"></script>
