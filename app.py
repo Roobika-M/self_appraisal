@@ -73,7 +73,7 @@ def upload():
     global staffname, detaillist, excel_path
 
     if request.method == 'POST':
-        print("🚀 Form submitted!")  # Debugging
+        print(" Form submitted!")  # Debugging
         
         # Get form data
         name = request.form.get('name')
@@ -83,16 +83,15 @@ def upload():
 
         # Validate form data
         if not all([name, designation, department, emp_id]):
-            print("⚠️ Missing form data!")  # Debugging
+            print("Missing form data!")  # Debugging
             return render_template('upload.html', error="Please fill in all details.")
-
         staffname = name
         detaillist = [name, designation, department, emp_id]
 
         # Get uploaded file
         file = request.files.get('excel_file')
         if not file or file.filename == '':
-            print("⚠️ No file uploaded!")  # Debugging
+            print(" No file uploaded!")  # Debugging
             return render_template('upload.html', error="Please upload an Excel file.")
 
         # Save the file
@@ -101,15 +100,15 @@ def upload():
         file.save(file_path)
 
         excel_path = file.filename
-        print(f"📂 File saved at: {file_path}")  # Debugging
+        print(f"File saved at: {file_path}")  # Debugging
         processing(excel_path, staffname)
         # try:
         #     processing(excel_path, staffname)
         # except Exception as e:
-        #     print(f"❌ Error processing file: {e}")  # Debugging
+        #     print(f"Error processing file: {e}")  # Debugging
         #     return render_template('upload.html', error="Error processing file.")
 
-        print("✅ Redirecting to download page...")  # Debugging
+        print("Redirecting to download page...")  # Debugging
         return redirect(url_for("download_path"))
 
     return render_template('upload.html')
@@ -191,7 +190,7 @@ def convert_docx_to_pdf(docx_path, pdf_path):
         doc.SaveAs(pdf_path, FileFormat=17)  # Convert DOCX to PDF
         doc.Close()
     except Exception as e:
-        print(f"❌ Error: {e}")
+        print(f"Error: {e}")
     finally:
         word.Quit()  # Close Word
         pythoncom.CoUninitialize()  # Clean up COM
@@ -211,7 +210,6 @@ def processing(excel_path,staffname):
     mentor = 0
     hod = 0
     sheet_names = pd.ExcelFile(excel_path).sheet_names
-
 
 ######################################################################################################
     if "Journal Publication" in sheet_names:
