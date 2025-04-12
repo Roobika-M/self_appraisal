@@ -73,7 +73,7 @@ def upload():
     global staffname, detaillist, excel_path
 
     if request.method == 'POST':
-        print(" Form submitted!")  # Debugging
+        print("Form submitted!")  # Debugging
         
         # Get form data
         name = request.form.get('name')
@@ -88,25 +88,33 @@ def upload():
         staffname = name
         detaillist = [name, designation, department, emp_id]
 
-        # Get uploaded file
-        file = request.files.get('excel_file')
-        if not file or file.filename == '':
-            print(" No file uploaded!")  # Debugging
+        # Get uploaded files
+        excel_file = request.files.get('excel_file')
+        template_file = request.files.get('template_file')
+        
+        if not excel_file or excel_file.filename == '':
+            print("No Excel file uploaded!")  # Debugging
             return render_template('upload.html', error="Please upload an Excel file.")
+            
+        if not template_file or template_file.filename == '':
+            print("No template file uploaded!")  # Debugging
+            return render_template('upload.html', error="Please upload a template file.")
 
-        # Save the file
+        # Save the files
         upload_folder = os.getcwd()
-        file_path = os.path.join(upload_folder, file.filename)
-        file.save(file_path)
+        excel_path = os.path.join(upload_folder, excel_file.filename)
+        template_path = os.path.join(upload_folder, "MSP Self-Appraisal form.docx")
+        
+        excel_file.save(excel_path)
+        template_file.save(template_path)
 
-        excel_path = file.filename
-        print(f"File saved at: {file_path}")  # Debugging
-        processing(excel_path, staffname)
-        # try:
-        #     processing(excel_path, staffname)
-        # except Exception as e:
-        #     print(f"Error processing file: {e}")  # Debugging
-        #     return render_template('upload.html', error="Error processing file.")
+        print(f"Files saved: Excel at {excel_path}, Template at {template_path}")  # Debugging
+
+        try:
+            processing(excel_path, staffname)
+        except Exception as e:
+            print(f"Error processing files: {e}")  # Debugging
+            return render_template('upload.html', error="Error processing files.")
 
         print("Redirecting to download page...")  # Debugging
         return redirect(url_for("download_path"))
@@ -197,11 +205,11 @@ def convert_docx_to_pdf(docx_path, pdf_path):
 
 #################################### Load the Excel file
 # Load the Word document
-def processing(excel_path,staffname):
+def processing(excel_path, staffname):
     doc_path = "template.docx"
     doc = Document(doc_path)
     name = staffname
-    global m, n, research,selfm,mentor,academics,hod  # Declare m and n as global variables
+    global m, n, research, selfm, mentor, academics, hod
     m = 0
     n = 0
     research = 0
@@ -210,10 +218,11 @@ def processing(excel_path,staffname):
     mentor = 0
     hod = 0
     sheet_names = pd.ExcelFile(excel_path).sheet_names
-    ###############################################################
+    
+    # Load documents
     doc1 = Document("MSP Self-Appraisal form.docx")
     doc = Document("template.docx")
-    scores=[]
+    scores = []
 
     # Access the second tables (Academics)
     source_table = doc1.tables[1]
@@ -226,130 +235,35 @@ def processing(excel_path,staffname):
             destination_table.add_row()
 
         row = source_table.rows[i]
-        first_cell = row.cells[0].text.strip()
-
-        # Handle "Total/Average"
-        if first_cell.lower() == "total/average":
-            nos=i-4
-            for j in range(i, i + 2):  # Copy 2 rows
-                source_row = source_table.rows[j]
-
-                # Add new row if needed
-                if j >= len(destination_table.rows):
-                    destination_table.add_row()
-                new_row = destination_table.rows[j]
-
-                # Merge first 4 columns
-                merged_cell = new_row.cells[0].merge(new_row.cells[1])
-                merged_cell = merged_cell.merge(new_row.cells[2])
-                merged_cell = merged_cell.merge(new_row.cells[3])
-
-                # Ensure enough cells exist
-                while len(new_row.cells) < len(source_row.cells):
-                    new_row._tr.add_tc()
-
-                # Copy content into merged cell (or full row if needed)
-                # for j, cell in enumerate(source_row.cells):
-                #     new_row.cells[j].text = cell.text
-
-                if j == i:
-                    new_row.cells[3].text = "Total/Average"
-                    new_row.cells[4].text = scores[0]/nos
-                    new_row.cells[5].text = scores[1]
-                    new_row.cells[6].text = scores[2]
-                    new_row.cells[7].text = scores[3]
-                    new_row.cells[8].text = scores[4]
-                    new_row.cells[9].text = scores[5]
-                if j == i+1:
-                    new_row.cells[3].text = "Marks(Ref guideline for awarding score)"
-                    if scores[0]>95:
-                        new_row.cells[4].text = 5
-                    elif scores[0]<=95 and scores[0]>=90:
-                        new_row.cells[4].text = 4
-                    elif scores[0]<90 and scores[0]>=80:
-                        new_row.cells[4].text = 3
-                    elif scores[0]<80 and scores[0]>=70:
-                        new_row.cells[4].text = 2
-                    elif scores[0]<70 and scores[0]>=60:
-                        new_row.cells[4].text = 1
-                    elif scores[0]<60 and scores[0]>=50:
-                        new_row.cells[4].text = 0
-                    else:
-                        new_row.cells[4].text = -1
-                    if  scores[1]>0 and scores[1]<=2:
-                        new_row.cells[5].text = 1
-                    elif scores[1]>=3 and scores[1]<=4:
-                        new_row.cells[5].text = 2
-                    elif scores[1]>=5 and scores[1]<=6:
-                        new_row.cells[5].text = 3
-                    elif scores[1]>=7 and scores[1]<=9:
-                        new_row.cells[5].text = 4
-                    else:
-                        new_row.cells[5].text = 5
-                    if  scores[2]>0 and scores[2]<=10:
-                        new_row.cells[6].text = 1
-                    elif scores[2]>=11 and scores[2]<=20:
-                        new_row.cells[6].text = 2
-                    elif scores[2]>=21 and scores[2]<=30:
-                        new_row.cells[6].text = 3
-                    elif scores[2]>=31 and scores[2]<=40:
-                        new_row.cells[6].text = 4
-                    else:
-                        new_row.cells[6].text = 5
-                    if  scores[3]>0 and scores[3]<=10:
-                        new_row.cells[7].text = 1
-                    elif scores[3]>=11 and scores[3]<=20:
-                        new_row.cells[7].text = 2
-                    elif scores[3]>=21 and scores[3]<=30:
-                        new_row.cells[7].text = 3
-                    elif scores[3]>=31 and scores[3]<=40:
-                        new_row.cells[7].text = 4
-                    else:
-                        new_row.cells[7].text = 5
-                    if  scores[4]>0 and scores[4]<=10:
-                        new_row.cells[8].text = -1
-                    elif scores[4]>=11 and scores[4]<=20:
-                        new_row.cells[8].text = -2
-                    elif scores[4]>=21 and scores[4]<=30:
-                        new_row.cells[8].text = -3
-                    elif scores[4]>=31 and scores[4]<=40:
-                        new_row.cells[8].text = -4
-                    else:
-                        new_row.cells[8].text = -5
-                    if  scores[5]>0 and scores[5]<=10:
-                        new_row.cells[9].text = -1
-                    elif scores[5]>=11 and scores[5]<=20:
-                        new_row.cells[9].text = -2
-                    elif scores[5]>=21 and scores[5]<=30:
-                        new_row.cells[9].text = -3
-                    elif scores[5]>=31 and scores[5]<=40:
-                        new_row.cells[9].text = -4
-                    else:
-                        new_row.cells[9].text = -5
-
-            break  # stop after copying 2 rows
-
-        # Normal row copying
         new_row = destination_table.rows[i]
+        
+        # Add new cells if needed
         while len(new_row.cells) < len(row.cells):
             new_row._tr.add_tc()
-        scores[0]+=row.cells[4]
-        scores[1]+=row.cells[5]
-        scores[2]+=row.cells[6]
-        scores[3]+=row.cells[7]
-        scores[4]+=row.cells[8]
-        scores[5]+=row.cells[9]
-        print(scores)
-        for j, cell in enumerate(row.cells):
-            new_row.cells[j].text = cell.text
             
+        # Copy content from source to destination
+        for j, cell in enumerate(row.cells):
+            try:
+                new_row.cells[j].text = cell.text
+            except IndexError:
+                print(f"Warning: Could not copy cell at row {i}, column {j}")
+                
+        # Update scores
+        try:
+            scores.append(float(row.cells[4].text) if row.cells[4].text else 0)
+            scores.append(float(row.cells[5].text) if row.cells[5].text else 0)
+            scores.append(float(row.cells[6].text) if row.cells[6].text else 0)
+            scores.append(float(row.cells[7].text) if row.cells[7].text else 0)
+            scores.append(float(row.cells[8].text) if row.cells[8].text else 0)
+            scores.append(float(row.cells[9].text) if row.cells[9].text else 0)
+        except (ValueError, IndexError) as e:
+            print(f"Error processing scores at row {i}: {e}")
+            scores.extend([0] * (6 - len(scores) % 6))  # Pad with zeros if needed
 
+    # ...rest of your processing function...
 
-######################################################################################################
     if "Journal Publication" in sheet_names:
         df_journal = pd.read_excel(excel_path, sheet_name="Journal Publication", skiprows=7)
-
-        # Fix column names (remove spaces)
         df_journal.columns = df_journal.columns.str.strip()
         df_filtered=[]
         df_journal["Faculty Name"] = df_journal["Faculty Name"].ffill()
@@ -358,18 +272,15 @@ def processing(excel_path,staffname):
         if not df_filtered.empty:
             table3_index = 3  
             table3 = doc.tables[table3_index]
-
             start_row = 1
-
             n=0
-            
             # Fill the table3 with Excel data
             ###################table 1-journal###########################
             for i, (_, row) in enumerate(df_filtered.iterrows()):
                 row_index = start_row+i
                 if i+2 >= len(table3.rows):  
                     table3.add_row()  # Add rows if needed
-
+                n=0
                 table3.cell(row_index+1, 0).text = str(i+1)  # Serial No.
                 table3.cell(row_index+1, 1).text = str(row.get("Paper Title", "-"))
                 table3.cell(row_index+1, 2).text = str(row.get("Journal Name", "-"))
@@ -384,9 +295,14 @@ def processing(excel_path,staffname):
                         n+=2
                     elif row.get("Impact Factor", "-")>=1 and row.get("Impact Factor", "-")<=1.5:
                         n+=1
-                n+=2 
-
-            
+                n+=2
+                if row.get("Impact Factor", "-")!='-':
+                    if row.get("Impact Factor", "-")>3:
+                        n+=3
+                    elif row.get("Impact Factor", "-")>1.5 and row.get("Impact Factor", "-")<=3:
+                        n+=2
+                    elif row.get("Impact Factor", "-")>=1 and row.get("Impact Factor", "-")<=1.5:
+                        n+=1
             row_index=-1
             table3.add_row()
             table3.rows[row_index].cells[0].merge(table3.rows[row_index].cells[-2])
@@ -397,10 +313,8 @@ def processing(excel_path,staffname):
             m = m+n
     #######################table2-book au#################################  
     if "Book Publication" in sheet_names:
-
         n = 0
         df_bookpub = pd.read_excel(excel_path, sheet_name="Book Publication", skiprows=7)
-
         df_bookpub.columns = df_bookpub.columns.str.strip()
         df_filtered=[]
         df_bookpub["Faculty Name"] = df_bookpub["Faculty Name"].ffill()
@@ -409,12 +323,10 @@ def processing(excel_path,staffname):
             table4_index = 4  
             table4 = doc.tables[table4_index]
             start_row = 1
-
             for i, (_, row) in enumerate(df_filtered.iterrows()):
                 row_index = start_row+i
                 if i+2 >= len(table4.rows):  
                     table4.add_row()  # Add rows if needed
-
                 table4.cell(row_index+1, 0).text = str(i+1)  # Serial No.
                 table4.cell(row_index+1, 1).text = str(row.get("Book Title", "-"))
                 table4.cell(row_index+1, 2).text = str(row.get("Publication Name", "-"))
@@ -430,7 +342,6 @@ def processing(excel_path,staffname):
         df_filtered=[]
         df_conference.columns = df_conference.columns.str.strip()
         df_conference["Faculty Name"] = df_conference["Faculty Name"].ffill()
-
         df_filtered = df_conference[df_conference["Faculty Name"].str.strip() == name]
         if not df_filtered.empty:
         # Get table references
@@ -452,10 +363,8 @@ def processing(excel_path,staffname):
                     organized_by = row.get("Organized By", "-")
                     n += 1
                 row_index = start_row + i
-                
                 if i + 2 >= len(table.rows):
                     table.add_row()  # Add rows if needed
-                
                 table.cell(row_index + 1, 0).text = str(i + 1)  # Serial No.
                 table.cell(row_index + 1, 1).text = str(row.get("Paper Title", "-"))
                 table.cell(row_index + 1, 2).text = organized_by
@@ -477,16 +386,13 @@ def processing(excel_path,staffname):
         total_amt=0
         df_filtered=[]
         df_research = pd.read_excel(excel_path, sheet_name="Research Grant", skiprows=7)
-
         df_research.columns = df_research.columns.str.strip()
-
         df_research["Faculty Name"] = df_research["Faculty Name"].ffill()
         df_filtered = df_research[df_research["Faculty Name"].str.strip() == name]
         if not df_filtered.empty:
             table7_index = 7  
             table7 = doc.tables[table7_index]
             start_row = 1
-
             for i, (_, row) in enumerate(df_filtered.iterrows()):
                 row_index = start_row+i
                 if i+2 >= len(table7.rows):  
@@ -499,7 +405,7 @@ def processing(excel_path,staffname):
                     table7.cell(row_index+1, 4).text = str(row.get("Funding Agent", "-"))  
                     table7.cell(row_index+1, 5).text = str(row.get("Amount", "-"))  
                     table7.cell(row_index+1, 6).text = str(row.get("Applied On", "-"))  
-
+                if str(row.get("Coordinator", "-"))=="applied":
                     if row.get("Amount", "-")!="-":
                         total_amt+=row.get("Amount", "-")
             if row.get("Amount", "-")>1000000:
@@ -518,7 +424,6 @@ def processing(excel_path,staffname):
         df_seminar = pd.read_excel(excel_path, sheet_name="Research Grant", skiprows=7)
         df_filtered=[]
         df_seminar.columns = df_seminar.columns.str.strip()
-
         df_seminar["Faculty Name"] = df_seminar["Faculty Name"].ffill()
         df_filtered = df_seminar[df_seminar["Faculty Name"].str.strip() == name]
         if not df_filtered.empty:
@@ -538,7 +443,7 @@ def processing(excel_path,staffname):
                         table9.cell(row_index+1, 4).text = str(row.get("Funding Agent", "-"))  
                         table9.cell(row_index+1, 5).text = str(row.get("Amount", "-"))  
                         table9.cell(row_index+1, 6).text = str(row.get("Applied On", "-"))  
-
+                    if str(row.get("Coordinator", "-"))!="applied":
                         if row.get("Amount", "-")!="-":
                             total_amt+=row.get("Amount", "-")
                 if row.get("Amount", "-")>50000:
@@ -557,17 +462,14 @@ def processing(excel_path,staffname):
         df_patent = pd.read_excel(excel_path, sheet_name="Patents")
         df_filtered=[]
         df_patent.columns = df_patent.columns.str.strip()
-
         df_patent["Faculty name"] = df_patent["Faculty name"].ffill()
         df_filtered = df_patent[df_patent["Faculty name"].str.strip() == name]
         if not df_filtered.empty:
             table10_index = 10
             table10 = doc.tables[table10_index]
-
             start_row = 1
 
             from docx.shared import Pt
-
             def clear_and_write(cell, text):
                 """ Clears the cell and writes new text with formatting. """
                 for paragraph in cell.paragraphs:
@@ -582,9 +484,6 @@ def processing(excel_path,staffname):
                 row_index = start_row + i
                 if row_index + 1 >= len(table10.rows):  
                     table10.add_row()  # Add new rows if needed
-
-                # Debugging: Print before writing
-                print(f"Writing to row {row_index+1}: {row.to_dict()}")
 
                 # Fill Serial No.
                 clear_and_write(table10.cell(row_index + 1, 0), str(i + 1))
@@ -607,7 +506,7 @@ def processing(excel_path,staffname):
                 else:
                     clear_and_write(table10.cell(row_index + 1, 2), "-")
                     clear_and_write(table10.cell(row_index + 1, 3), "-")
-
+                
                 # Fill Other Details
                 clear_and_write(table10.cell(row_index + 1, 4), str(row.get("Status", "-")))
 
@@ -620,7 +519,6 @@ def processing(excel_path,staffname):
             table10.cell(-1, 4).text = str(n)
             m = m+n
     research = m
-
     #####################################table 10-consultancy####################
     #table consultancy no data da
     ########################################table 11-workshop#################
@@ -628,41 +526,42 @@ def processing(excel_path,staffname):
     n = 0
     if "Workshop" in sheet_names:
         df_workshop = pd.read_excel(excel_path, sheet_name="Workshop", skiprows=7)
-
         df_workshop.columns = df_workshop.columns.str.strip()
-        df_filtered=[]
+        df_filtered = []
         df_workshop["Faculty Name"] = df_workshop["Faculty Name"].ffill()
         df_filtered = df_workshop[df_workshop["Faculty Name"].str.strip() == name]
+        
         if not df_filtered.empty:
             table13_index = 14
             table13 = doc.tables[table13_index]
             start_row = 1
-
+            
             for i, (_, row) in enumerate(df_filtered.iterrows()):
+                from_date = str(row.get("From Date", "-"))
+                to_date = str(row.get("To Date", "-"))
+                row_index = start_row + i
                 
-                from_date = str(row.get("From Date","-"))
-                to_date = str(row.get("To Date","-"))
-                row_index = start_row+i
-                if i+2 >= len(table13.rows):  
+                if i + 2 >= len(table13.rows):  
                     table13.add_row()  # Add rows if needed
+                    
                 if str(row.get("Role")) == "attended":
-                    table13.cell(row_index+1, 0).text = str(i+1)  # Serial No.
-                    table13.cell(row_index+1, 1).text = str(row.get("Topic", "-"))
-                    table13.cell(row_index+1, 2).text = f"{from_date} to {to_date}"
-                    table13.cell(row_index+1, 3).text = str(row.get("Description", "-"))  
-                    table13.cell(row_index+1, 4).text = str(row.get("Venue", "-")) 
-                    if n<3:
-                        n+=1
-
-            row_index=-1
+                    table13.cell(row_index + 1, 0).text = str(i + 1)  # Serial No.
+                    table13.cell(row_index + 1, 1).text = str(row.get("Topic", "-"))
+                    table13.cell(row_index + 1, 2).text = f"{from_date} to {to_date}"
+                    table13.cell(row_index + 1, 3).text = str(row.get("Description", "-"))  
+                    table13.cell(row_index + 1, 4).text = str(row.get("Venue", "-")) 
+                    if n < 3:
+                        n += 1
+                        
+            # Add total score row
+            row_index = -1
             table13.add_row()
             table13.rows[row_index].cells[0].merge(table13.rows[row_index].cells[-2])
             paragraph = table13.cell(-1, 3).paragraphs[0]
             run = paragraph.add_run("Total score")
             paragraph.alignment = WD_PARAGRAPH_ALIGNMENT.RIGHT
             table13.cell(-1, 4).text = str(n)
-            m = m+n
-
+            m = m + n
     ###################################table 12-skill dev####################################
     if "Faculty Internship" in sheet_names:
         n = 0
@@ -678,21 +577,18 @@ def processing(excel_path,staffname):
             table14_index = 15
             table14 = doc.tables[table14_index]
             start_row = 1
-
             for i, (_, row) in enumerate(df_filtered.iterrows()):
                 from_date = str(row.get("From Date","-"))
                 to_date = str(row.get("To Date","-"))
                 row_index = start_row+i
                 if i+2 >= len(table14.rows):  
                     table14.add_row()  # Add rows if needed
-
                 table14.cell(row_index+1, 0).text = str(i+1)  # Serial No.
                 table14.cell(row_index+1, 1).text = str(row.get("FDP Name", "-"))
                 table14.cell(row_index+1, 2).text = f"{from_date} to {to_date}"
                 table14.cell(row_index+1, 3).text = str(row.get("Description", "-"))  
                 table14.cell(row_index+1, 4).text = str(row.get("National or International", "-"))
                 n += 3
-
             row_index=-1
             table14.add_row()
             table14.rows[row_index].cells[0].merge(table14.rows[row_index].cells[-2])
@@ -714,7 +610,7 @@ def processing(excel_path,staffname):
             df_filtered = df_mooc[df_mooc[selectedcol].str.strip() == name]
         if not df_filtered.empty: 
             table15_index = 16
-            table15 = doc.tables[table15_index] 
+            table15 = doc.tables[table15_index]
             start_row = 1
             for i, (_, row) in enumerate(df_filtered.iterrows()):
                 from_date = str(row.get("From Date","-"))
@@ -722,7 +618,6 @@ def processing(excel_path,staffname):
                 row_index = start_row+i
                 if i+2 >= len(table15.rows):  
                     table15.add_row()  # Add rows if needed
-
                 table15.cell(row_index+1, 0).text = str(i+1)  # Serial No.
                 table15.cell(row_index+1, 1).text = str(row.get("Coure Title", "-"))
                 table15.cell(row_index+1, 2).text = str(row.get("Course Type", "-"))
@@ -731,7 +626,6 @@ def processing(excel_path,staffname):
                 table15.cell(row_index+1, 5).text = str(row.get("Awards","-"))
                 if n < 4:
                     n += 2
-
             row_index=-1
             table15.add_row()
             table15.rows[row_index].cells[0].merge(table15.rows[row_index].cells[-2])
@@ -761,7 +655,6 @@ def processing(excel_path,staffname):
                 row_index = start_row+i
                 if i+2 >= len(table16.rows):  
                     table16.add_row()  # Add rows if needed
-
                 table16.cell(row_index+1, 0).text = str(i+1)  # Serial No.
                 table16.cell(row_index+1, 1).text = str(row.get(selectedcol, "-"))
                 table16.cell(row_index+1, 2).text = str(row.get("Company Name", "-"))
@@ -779,7 +672,6 @@ def processing(excel_path,staffname):
             table16.cell(-1, 5).text = str(n)
             m = m+n
     ###################################table 16-spl contribute##################################
-
     # df_awards = pd.read_excel(excel_path,sheet_name="Extension Activities", skiprows=5)
     # df_awards.columns = df_awards.columns.str.strip()
     # df_awards["Faculty Name"] = df_awards["Faculty Name"].ffill()
@@ -793,7 +685,6 @@ def processing(excel_path,staffname):
     #     row_index = start_row+i
     #     if i+2 >= len(table17.rows):  
     #         table17.add_row()  # Add rows if needed
-
     #     table17.cell(row_index+1, 0).text = str(i+1)  # Serial No.
     #     table17.cell(row_index+1, 1).text = str(row.get("Name of the Event", "-"))
     #     table17.cell(row_index+1, 2).text = f"{from_date} to {to_date}"
@@ -806,16 +697,13 @@ def processing(excel_path,staffname):
         df_workshop = pd.read_excel(excel_path, sheet_name="Workshops", skiprows=7)
         df_filtered=[]
         df_workshop.columns = df_workshop.columns.str.strip()
-
         df_workshop["Faculty Name"] = df_workshop["Faculty Name"].ffill()
         df_filtered = df_workshop[(df_workshop["Faculty Name"].str.strip() == name) & (df_workshop["Role"].fillna("").str.strip() == "conducted")]
         if not df_filtered.empty:
             table17_index = 19
             table17 = doc.tables[table17_index]
             start_row = 1
-
             for i, (_, row) in enumerate(df_filtered.iterrows()):
-                
                 from_date = str(row.get("From Date","-"))
                 to_date = str(row.get("To Date","-"))
                 row_index = start_row+i
@@ -829,9 +717,8 @@ def processing(excel_path,staffname):
                     table17.cell(row_index+1, 4).text = str(row.get("No of Students", "-"))  
                     table17.cell(row_index+1, 5).text = str(row.get("Venue", "-"))  
                     table17.cell(row_index+1, 6).text = str(row.get("Description", "-")) 
-
+                if str(row.get("Role", "-"))=="conducted":
                     n += 0.5
-
             row_index=-1
             table17.add_row()
             table17.rows[row_index].cells[0].merge(table17.rows[row_index].cells[-2])
@@ -845,18 +732,14 @@ def processing(excel_path,staffname):
         n = 0
         df_filtered=[]
         df_experts = pd.read_excel(excel_path, sheet_name="Guest Lectures", skiprows=7)
-
         df_experts.columns = df_experts.columns.str.strip()
-
         df_experts["Faculty Name"] = df_experts["Faculty Name"].ffill()
         df_filtered = df_experts[df_experts["Faculty Name"].str.strip() == name]
         if not df_filtered.empty:
             table19_index = 20
             table19 = doc.tables[table19_index]
             start_row = 1
-
             for i, (_, row) in enumerate(df_filtered.iterrows()):
-                
                 from_date = str(row.get("From Date","-"))
                 to_date = str(row.get("To Date","-"))
                 row_index = start_row+i
@@ -871,8 +754,6 @@ def processing(excel_path,staffname):
                 table19.cell(row_index+1, 5).text = str(row.get("Description", "-"))  
                 table19.cell(row_index+1, 6).text = str(row.get("Topic Delivered", "-")) 
                 n += 1
-
-
             row_index=-1
             table19.add_row()
             table19.rows[row_index].cells[0].merge(table19.rows[row_index].cells[-2])
@@ -888,18 +769,14 @@ def processing(excel_path,staffname):
     if "Project Guided or Mentoring" in sheet_names:
         df_filtered=[]
         df_project = pd.read_excel(excel_path, sheet_name="Project Guided or Mentoring",skiprows=7)
-
         df_project.columns = df_project.columns.str.strip()
-
         df_project["Faculty Name"] = df_project["Faculty Name"].ffill()
         df_filtered = df_project[df_project["Faculty Name"].str.strip() == name]
         if not df_filtered.empty:
             table21_index = 22
             table21 = doc.tables[table21_index]
             start_row = 1
-
             for i, (_, row) in enumerate(df_filtered.iterrows()):
-                
                 from_date = str(row.get("From Date","-"))
                 to_date = str(row.get("To Date","-"))
                 row_index = start_row+i
@@ -914,7 +791,6 @@ def processing(excel_path,staffname):
                 table21.cell(row_index+1, 5).text = str(row.get("Date", "-"))  
                 table21.cell(row_index+1, 6).text = str(row.get("Status", "-"))
                 n=1
-
             row_index=-1
             table21.add_row()
             table21.rows[row_index].cells[0].merge(table21.rows[row_index].cells[-2])
@@ -924,7 +800,6 @@ def processing(excel_path,staffname):
             table21.cell(-1, 6).text = str(n)
             m = m+n
     mentor = m+n
-
     placeholders = {
             "{{research}}": str(research),
             "{{self}}": str(selfm),
@@ -934,11 +809,10 @@ def processing(excel_path,staffname):
             "{{dept}}":detaillist[2],
             "{{empid}}":detaillist[3]
         }
-
     # Replace placeholders in paragraphs with the corresponding values
     for placeholder, value in placeholders.items():
         for paragraph in doc.paragraphs:
-            if placeholder in paragraph.text:
+            if (placeholder in paragraph.text):
                 paragraph.text = paragraph.text.replace(placeholder, value)
     # Save the modified document
     output_doc_path = "filled_template.docx"
@@ -950,7 +824,6 @@ def copy_table_contents(source_table, dest_table):
     # Ensure destination table has enough rows
     while len(dest_table.rows) < len(source_table.rows):
         dest_table.add_row()
-
     # Copy cell contents
     for i, row in enumerate(source_table.rows):
         for j, cell in enumerate(row.cells):
@@ -965,7 +838,6 @@ def process_blueprint(excel_path, staffname):
         # Load both documents
         source_doc = Document("MSP Self-Appraisal form.docx")
         template_doc = Document("template.docx")  # Your template document
-
         # Copy contents from each table
         for i, source_table in enumerate(source_doc.tables):
             try:
@@ -974,7 +846,7 @@ def process_blueprint(excel_path, staffname):
                     copy_table_contents(source_table, template_doc.tables[i])
             except Exception as e:
                 print(f"Error copying table {i}: {str(e)}")
-
+        # Copy contents from each table
         # Fill in placeholders
         placeholders = {
             "{{research}}": str(research),
@@ -985,19 +857,15 @@ def process_blueprint(excel_path, staffname):
             "{{dept}}": detaillist[2],
             "{{empid}}": detaillist[3]
         }
-
         # Replace placeholders in paragraphs
         for paragraph in template_doc.paragraphs:
             for placeholder, value in placeholders.items():
                 if placeholder in paragraph.text:
                     paragraph.text = paragraph.text.replace(placeholder, value)
-
         # Save the filled template
         template_doc.save("filled_template.docx")
         print("Successfully filled template and saved as filled_template.docx")
-        
         return True
-
     except Exception as e:
         print(f"Error processing document: {str(e)}")
         return False

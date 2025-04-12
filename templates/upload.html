@@ -82,6 +82,7 @@
             align-items: center;
             background: #474A59;
             position: relative;
+            overflow-y: auto; /* Add scroll if content overflows */
         }
 
         @media (max-width: 767px) {
@@ -94,9 +95,10 @@
 
         .form {
             margin: 0 auto;
-            position: absolute;
+            position: relative; /* Change from absolute to relative */
             width: 80%;
             max-width: 320px;
+            padding-bottom: 60px; /* Add padding for submit button */
         }
 
         label {
@@ -162,6 +164,8 @@
             cursor: pointer;
             font-size: 16px;
             margin-top: 40px;
+            margin-bottom: 20px; /* Add bottom margin */
+            width: 100%; /* Make button full width */
             transition: all 0.3s ease;
         }
 
@@ -216,10 +220,18 @@
                         <div class="input-group">
                             <label for="excel_file">Upload Excel File</label>
                             <label class="custom-file-upload">
-                                <input type="file" id="excel_file" name="excel_file" accept=".xlsx, .xls" onchange="showFileName()" required>
-                                Choose File
+                                <input type="file" id="excel_file" name="excel_file" accept=".xlsx, .xls" onchange="showFileName('excel_file', 'excel-file-name')" required>
+                                Choose Excel File
                             </label>
-                            <span class="file-name" id="file-name">No file chosen</span>
+                            <span class="file-name" id="excel-file-name">No file chosen</span>
+                        </div>
+                        <div class="input-group">
+                            <label for="template_file">Upload Template File</label>
+                            <label class="custom-file-upload">
+                                <input type="file" id="template_file" name="template_file" accept=".docx" onchange="showFileName('template_file', 'template-file-name')" required>
+                                Choose Template File
+                            </label>
+                            <span class="file-name" id="template-file-name">No file chosen</span>
                         </div>                        
                         <input type="submit" id="submit" value="Submit">
                     </form>
@@ -228,11 +240,11 @@
         </div>
     </div>
     <script>
-        function showFileName() {
-          const input = document.getElementById('excel_file');
-          const fileName = document.getElementById('file-name');
-          fileName.textContent = input.files.length > 0 ? input.files[0].name : "No file chosen";
+        function showFileName(inputId, spanId) {
+            const input = document.getElementById(inputId);
+            const fileName = document.getElementById(spanId);
+            fileName.textContent = input.files.length > 0 ? input.files[0].name : "No file chosen";
         }
-      </script>      
+    </script>      
 </body>
 </html>
