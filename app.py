@@ -213,6 +213,7 @@ def processing(excel_path,staffname):
     ###############################################################
     doc1 = Document("MSP Self-Appraisal form.docx")
     doc = Document("template.docx")
+    scores=[]
 
     # Access the second tables (Academics)
     source_table = doc1.tables[1]
@@ -229,6 +230,7 @@ def processing(excel_path,staffname):
 
         # Handle "Total/Average"
         if first_cell.lower() == "total/average":
+            nos=i-4
             for j in range(i, i + 2):  # Copy 2 rows
                 source_row = source_table.rows[j]
 
@@ -247,17 +249,100 @@ def processing(excel_path,staffname):
                     new_row._tr.add_tc()
 
                 # Copy content into merged cell (or full row if needed)
-                for j, cell in enumerate(source_row.cells):
-                    new_row.cells[j].text = cell.text
+                # for j, cell in enumerate(source_row.cells):
+                #     new_row.cells[j].text = cell.text
+
+                if j == i:
+                    new_row.cells[3].text = "Total/Average"
+                    new_row.cells[4].text = scores[0]/nos
+                    new_row.cells[5].text = scores[1]
+                    new_row.cells[6].text = scores[2]
+                    new_row.cells[7].text = scores[3]
+                    new_row.cells[8].text = scores[4]
+                    new_row.cells[9].text = scores[5]
+                if j == i+1:
+                    new_row.cells[3].text = "Marks(Ref guideline for awarding score)"
+                    if scores[0]>95:
+                        new_row.cells[4].text = 5
+                    elif scores[0]<=95 and scores[0]>=90:
+                        new_row.cells[4].text = 4
+                    elif scores[0]<90 and scores[0]>=80:
+                        new_row.cells[4].text = 3
+                    elif scores[0]<80 and scores[0]>=70:
+                        new_row.cells[4].text = 2
+                    elif scores[0]<70 and scores[0]>=60:
+                        new_row.cells[4].text = 1
+                    elif scores[0]<60 and scores[0]>=50:
+                        new_row.cells[4].text = 0
+                    else:
+                        new_row.cells[4].text = -1
+                    if  scores[1]>0 and scores[1]<=2:
+                        new_row.cells[5].text = 1
+                    elif scores[1]>=3 and scores[1]<=4:
+                        new_row.cells[5].text = 2
+                    elif scores[1]>=5 and scores[1]<=6:
+                        new_row.cells[5].text = 3
+                    elif scores[1]>=7 and scores[1]<=9:
+                        new_row.cells[5].text = 4
+                    else:
+                        new_row.cells[5].text = 5
+                    if  scores[2]>0 and scores[2]<=10:
+                        new_row.cells[6].text = 1
+                    elif scores[2]>=11 and scores[2]<=20:
+                        new_row.cells[6].text = 2
+                    elif scores[2]>=21 and scores[2]<=30:
+                        new_row.cells[6].text = 3
+                    elif scores[2]>=31 and scores[2]<=40:
+                        new_row.cells[6].text = 4
+                    else:
+                        new_row.cells[6].text = 5
+                    if  scores[3]>0 and scores[3]<=10:
+                        new_row.cells[7].text = 1
+                    elif scores[3]>=11 and scores[3]<=20:
+                        new_row.cells[7].text = 2
+                    elif scores[3]>=21 and scores[3]<=30:
+                        new_row.cells[7].text = 3
+                    elif scores[3]>=31 and scores[3]<=40:
+                        new_row.cells[7].text = 4
+                    else:
+                        new_row.cells[7].text = 5
+                    if  scores[4]>0 and scores[4]<=10:
+                        new_row.cells[8].text = -1
+                    elif scores[4]>=11 and scores[4]<=20:
+                        new_row.cells[8].text = -2
+                    elif scores[4]>=21 and scores[4]<=30:
+                        new_row.cells[8].text = -3
+                    elif scores[4]>=31 and scores[4]<=40:
+                        new_row.cells[8].text = -4
+                    else:
+                        new_row.cells[8].text = -5
+                    if  scores[5]>0 and scores[5]<=10:
+                        new_row.cells[9].text = -1
+                    elif scores[5]>=11 and scores[5]<=20:
+                        new_row.cells[9].text = -2
+                    elif scores[5]>=21 and scores[5]<=30:
+                        new_row.cells[9].text = -3
+                    elif scores[5]>=31 and scores[5]<=40:
+                        new_row.cells[9].text = -4
+                    else:
+                        new_row.cells[9].text = -5
+
             break  # stop after copying 2 rows
 
         # Normal row copying
         new_row = destination_table.rows[i]
         while len(new_row.cells) < len(row.cells):
             new_row._tr.add_tc()
-
+        scores[0]+=row.cells[4]
+        scores[1]+=row.cells[5]
+        scores[2]+=row.cells[6]
+        scores[3]+=row.cells[7]
+        scores[4]+=row.cells[8]
+        scores[5]+=row.cells[9]
+        print(scores)
         for j, cell in enumerate(row.cells):
             new_row.cells[j].text = cell.text
+            
 
 
 ######################################################################################################
