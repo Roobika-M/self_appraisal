@@ -210,6 +210,55 @@ def processing(excel_path,staffname):
     mentor = 0
     hod = 0
     sheet_names = pd.ExcelFile(excel_path).sheet_names
+    ###############################################################
+    doc1 = Document("MSP Self-Appraisal form.docx")
+    doc = Document("template.docx")
+
+    # Access the second tables (Academics)
+    source_table = doc1.tables[1]
+    destination_table = doc.tables[1]
+
+    # Copy from source row 2 onward (skip first 2 header rows)
+    for i in range(2, len(source_table.rows)):
+        # Ensure destination has enough rows
+        if i >= len(destination_table.rows):
+            destination_table.add_row()
+
+        row = source_table.rows[i]
+        first_cell = row.cells[0].text.strip()
+
+        # Handle "Total/Average"
+        if first_cell.lower() == "total/average":
+            for j in range(i, i + 2):  # Copy 2 rows
+                source_row = source_table.rows[j]
+
+                # Add new row if needed
+                if j >= len(destination_table.rows):
+                    destination_table.add_row()
+                new_row = destination_table.rows[j]
+
+                # Merge first 4 columns
+                merged_cell = new_row.cells[0].merge(new_row.cells[1])
+                merged_cell = merged_cell.merge(new_row.cells[2])
+                merged_cell = merged_cell.merge(new_row.cells[3])
+
+                # Ensure enough cells exist
+                while len(new_row.cells) < len(source_row.cells):
+                    new_row._tr.add_tc()
+
+                # Copy content into merged cell (or full row if needed)
+                for j, cell in enumerate(source_row.cells):
+                    new_row.cells[j].text = cell.text
+            break  # stop after copying 2 rows
+
+        # Normal row copying
+        new_row = destination_table.rows[i]
+        while len(new_row.cells) < len(row.cells):
+            new_row._tr.add_tc()
+
+        for j, cell in enumerate(row.cells):
+            new_row.cells[j].text = cell.text
+
 
 ######################################################################################################
     if "Journal Publication" in sheet_names:
