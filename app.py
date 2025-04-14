@@ -179,7 +179,16 @@ def download(file_type):
 def download_path():
     global staffname, research, selfm, mentor, academics, hod
     total_score = research + selfm + mentor + academics + hod
-    return render_template("download.html", name=staffname, research=research, selfm=selfm,mentor=mentor, total_score=total_score, academics=academics, hod=hod)
+    return render_template(
+        "download.html", 
+        name=staffname, 
+        research=research, 
+        selfm=selfm,
+        mentor=mentor, 
+        academics=academics,  # Add academics score
+        hod=hod,
+        total_score=total_score
+    )
 
 
 def convert_docx_to_pdf(docx_path, pdf_path):
@@ -333,7 +342,19 @@ def processing(excel_path, staffname, template_path):  # Add template_path param
             if j >= 4 and j <= 9:
                 scores[j - 4] += get_float(text)
             
+    def get_total_academics_score(scores, nos):
+        total = 0
+        if nos > 0:
+            total += get_grade_1(scores[0] / nos)  # First column score
+        total += get_grade_2(scores[1])  # Second column score
+        total += get_grade_2(scores[2])  # Third column score 
+        total += get_grade_2(scores[3])  # Fourth column score
+        total += get_grade_negative(scores[4])  # Fifth column score
+        total += get_grade_negative(scores[5])  # Sixth column score
+        return total
 
+    # After calculating the marks row:
+    academics = get_total_academics_score(scores, nos)  # Store the total academics score
 
 ######################################################################################################
     if "Journal Publication" in sheet_names:
@@ -919,6 +940,7 @@ def processing(excel_path, staffname, template_path):  # Add template_path param
             "{{research}}": str(research),
             "{{self}}": str(selfm),
             "{{mentorship}}": str(mentor),
+            "{{academics}}": str(academics),  
             "{{name}}":detaillist[0],
             "{{designation}}":detaillist[1],
             "{{dept}}":detaillist[2],
