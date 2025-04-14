@@ -38,9 +38,9 @@
 
         .container {
             display: flex;
-            height: 500px; /* Increased height */
+            height: 500px; 
             margin: 0 auto;
-            width: 700px; /* Increased width */
+            width: 700px; 
         }
 
         @media (max-width: 767px) {
@@ -73,16 +73,16 @@
 
         .right {
             width: 60%;
-            min-height: 500px; /* Increased height */
-            padding: 40px;
+            min-height: 500px; 
+            padding: 40px 40px 20px 40px; /* Reduced bottom padding */
             box-shadow: 0px 0px 40px 16px rgba(0,0,0,0.22);
             display: flex;
             flex-direction: column;
-            justify-content: flex-start; /* Align form to top */
+            justify-content: flex-start; 
             align-items: center;
             background: #474A59;
             position: relative;
-            overflow-y: auto; /* Add scroll if content overflows */
+            overflow-y: auto; 
         }
 
         @media (max-width: 767px) {
@@ -98,7 +98,7 @@
             position: relative; /* Change from absolute to relative */
             width: 80%;
             max-width: 320px;
-            padding-bottom: 60px; /* Add padding for submit button */
+            padding-bottom: 20px; /* Reduced from 60px */
         }
 
         label {
@@ -163,8 +163,8 @@
             padding: 12px 20px;
             cursor: pointer;
             font-size: 16px;
-            margin-top: 40px;
-            margin-bottom: 20px; /* Add bottom margin */
+            margin-top: 30px; /* Reduced from 40px */
+            margin-bottom: 0; /* Removed bottom margin */
             width: 100%; /* Make button full width */
             transition: all 0.3s ease;
         }
@@ -226,10 +226,10 @@
                             <span class="file-name" id="excel-file-name">No file chosen</span>
                         </div>
                         <div class="input-group">
-                            <label for="template_file">Upload Template File</label>
+                            <label for="template_file">Upload Academics Data</label>
                             <label class="custom-file-upload">
                                 <input type="file" id="template_file" name="template_file" accept=".docx" onchange="showFileName('template_file', 'template-file-name')" required>
-                                Choose Template File
+                                Choose Word File
                             </label>
                             <span class="file-name" id="template-file-name">No file chosen</span>
                         </div>                        
