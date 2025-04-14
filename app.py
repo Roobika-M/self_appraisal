@@ -73,7 +73,7 @@ def upload():
     global staffname, detaillist, excel_path
 
     if request.method == 'POST':
-        print(" Form submitted!")  # Debugging
+        print("Form submitted!")  # Debugging
         
         # Get form data
         name = request.form.get('name')
@@ -88,25 +88,29 @@ def upload():
         staffname = name
         detaillist = [name, designation, department, emp_id]
 
-        # Get uploaded file
-        file = request.files.get('excel_file')
-        if not file or file.filename == '':
-            print(" No file uploaded!")  # Debugging
-            return render_template('upload.html', error="Please upload an Excel file.")
+        # Get uploaded files
+        excel_file = request.files.get('excel_file')
+        template_file = request.files.get('template_file')
+        
+        if not excel_file or excel_file.filename == '' or not template_file or template_file.filename == '':
+            print("Missing files!")  # Debugging
+            return render_template('upload.html', error="Please upload both Excel and Template files.")
 
-        # Save the file
+        # Save the files
         upload_folder = os.getcwd()
-        file_path = os.path.join(upload_folder, file.filename)
-        file.save(file_path)
+        excel_path = os.path.join(upload_folder, excel_file.filename)
+        template_path = os.path.join(upload_folder, template_file.filename)
+        
+        excel_file.save(excel_path)
+        template_file.save(template_path)
 
-        excel_path = file.filename
-        print(f"File saved at: {file_path}")  # Debugging
-        processing(excel_path, staffname)
-        # try:
-        #     processing(excel_path, staffname)
-        # except Exception as e:
-        #     print(f"Error processing file: {e}")  # Debugging
-        #     return render_template('upload.html', error="Error processing file.")
+        print(f"Files saved: Excel - {excel_path}, Template - {template_path}")  # Debugging
+
+        try:
+            processing(excel_path, staffname, template_path)  # Pass template_path to processing function
+        except Exception as e:
+            print(f"Error processing files: {e}")  # Debugging
+            return render_template('upload.html', error="Error processing files.")
 
         print("Redirecting to download page...")  # Debugging
         return redirect(url_for("download_path"))
@@ -197,9 +201,10 @@ def convert_docx_to_pdf(docx_path, pdf_path):
 
 #################################### Load the Excel file
 # Load the Word document
-def processing(excel_path,staffname):
+def processing(excel_path, staffname, template_path):  # Add template_path parameter
     doc_path = "template.docx"
     doc = Document(doc_path)
+    doc1 = Document(template_path)  # Use the uploaded template file
     name = staffname
     global m, n, research,selfm,mentor,academics,hod  # Declare m and n as global variables
     m = 0
@@ -215,7 +220,7 @@ def processing(excel_path,staffname):
     doc = Document("template.docx")
     scores=[]
 
-    # Access the second tables (Academics)
+    # Access the second tables (Academics)   
     source_table = doc1.tables[1]
     destination_table = doc.tables[1]
 
