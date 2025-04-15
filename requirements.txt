@@ -3,3 +3,6 @@ Flask-SQLAlchemy
 Werkzeug
 pandas
 python-docx
+docx2pdf
+reportlab
+pywin32
