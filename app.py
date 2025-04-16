@@ -211,8 +211,7 @@ def convert_docx_to_pdf(docx_path, pdf_path):
 #################################### Load the Excel file
 # Load the Word document
 def processing(excel_path, staffname, template_path):  # Add template_path parameter
-    doc_path = "template.docx"
-    doc = Document(doc_path)
+    doc = Document("template.docx")
     doc1 = Document(template_path)  # Use the uploaded template file
     name = staffname
     global m, n, research,selfm,mentor,academics,hod  # Declare m and n as global variables
@@ -225,7 +224,7 @@ def processing(excel_path, staffname, template_path):  # Add template_path param
     hod = 0
     sheet_names = pd.ExcelFile(excel_path).sheet_names
     ###############################################################
-    doc1 = Document("MSP Self-Appraisal form.docx")
+    doc1 = Document(template_path)
     doc = Document("template.docx")
     scores=[]
 
@@ -971,21 +970,21 @@ def copy_table_contents(source_table, dest_table):
             except IndexError:
                 print(f"Warning: Could not copy cell at row {i}, column {j}")
 
-def process_blueprint(excel_path, staffname):
-    """Process the blueprint and fill the template"""
-    try:
-        # Load both documents
-        source_doc = Document("MSP Self-Appraisal form.docx")
-        template_doc = Document("template.docx")  # Your template document
+# def process_blueprint(excel_path, staffname):
+#     """Process the blueprint and fill the template"""
+#     try:
+#         # Load both documents
+#         source_doc = Document("MSP Self-Appraisal form.docx")
+#         template_doc = Document("template.docx")  # Your template document
 
-        # Copy contents from each table
-        for i, source_table in enumerate(source_doc.tables):
-            try:
-                # Make sure template has corresponding table
-                if i < len(template_doc.tables):
-                    copy_table_contents(source_table, template_doc.tables[i])
-            except Exception as e:
-                print(f"Error copying table {i}: {str(e)}")
+#         # Copy contents from each table
+#         for i, source_table in enumerate(source_doc.tables):
+#             try:
+#                 # Make sure template has corresponding table
+#                 if i < len(template_doc.tables):
+#                     copy_table_contents(source_table, template_doc.tables[i])
+#             except Exception as e:
+#                 print(f"Error copying table {i}: {str(e)}")
 
         # Fill in placeholders
         placeholders = {
@@ -1010,9 +1009,9 @@ def process_blueprint(excel_path, staffname):
         
         return True
 
-    except Exception as e:
-        print(f"Error processing document: {str(e)}")
-        return False
+    # except Exception as e:
+    #     print(f"Error processing document: {str(e)}")
+    #     return False
 
 if __name__ == '__main__':
     # with app.app_context():
