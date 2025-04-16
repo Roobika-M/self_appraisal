@@ -303,13 +303,19 @@
                 <div class="button-wrap">
                     <button class="btn" onclick="openStatsModal()">View Stats</button>
                     <div class="download-btn">
-                        Download
+                        Download Self Appraisal Form
                         <div class="dropdown">
                             <a onclick="downloadFile('docx')">Download as Word</a>
                             <a onclick="downloadFile('pdf')">Download as PDF</a>
                         </div>
                     </div>
-
+                    <div class="download-btn">
+                        Download Corrective Action Form
+                        <div class="dropdown">
+                            <a onclick="downloadFile('docx_feedback')">Download as Word</a>
+                            <a onclick="downloadFile('pdf_feedback')">Download as PDF</a>
+                        </div>
+                    </div>
                     <a class="download-btn" href="{{ url_for('upload') }}">Back to details</a>
                 </div>
             </div>
