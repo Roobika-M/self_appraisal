@@ -6,20 +6,14 @@
     <title>Download File | KITE</title>
     <style>
         @import url('https://rsms.me/inter/inter-ui.css');
-        
-        ::selection { background: #2D2F36; }
-        ::-webkit-selection { background: #2D2F36; }
-        ::-moz-selection { background: #2D2F36; }
 
         body {
-            background: white;
+            background: white;  /* White background for body */
             font-family: 'Inter UI', sans-serif;
             margin: 0;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            padding: 20px;  /* Add padding like other pages */
             height: 100vh;
+            overflow: hidden;
         }
 
         .page {
@@ -32,27 +26,12 @@
             width: calc(100% - 40px);
         }
 
-        @media (max-width: 767px) {
-            .page {
-                height: auto;
-                margin-bottom: 20px;
-                padding-bottom: 20px;
-            }
-        }
-
         .container {
             display: flex;
-            height: 300px;
+            height: 320px;
             margin: 0 auto;
-            width: 700px;
-        }
-
-        @media (max-width: 767px) {
-            .container {
-                flex-direction: column;
-                height: auto;
-                width: 320px;
-            }
+            width: 640px;
+            background: transparent;  /* Make container background transparent */
         }
 
         .left {
@@ -80,42 +59,14 @@
 
         .right {
             width: 60%;
-            min-height: 300px;
+            min-height: 320px;
             padding: 40px;
-            box-shadow: 0px 0px 40px 16px rgba(0,0,0,0.22);
+            box-shadow: 0px 0px 40px 16px rgba(0, 0, 0, 0.22);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             background: #474A59;
-        }
-        html, body {
-            overflow: hidden;
-            height: 100%;
-            margin: 0;
-            padding: 0;
-        }
-        
-        @media (max-width: 767px) {
-            .right {
-                width: 100%;
-                height: auto;
-                max-height: none;
-            }
-        }
-
-        .form {
-            margin: 0 auto;
-            width: 80%;
-            max-width: 320px;
-        }
-
-        label {
-            color: #c2c2c5;
-            display: block;
-            font-size: 14px;
-            margin-top: 20px;
-            margin-bottom: 5px;
         }
 
         .button-wrap {
@@ -124,6 +75,8 @@
             justify-content: center;
             align-items: center;
             margin-top: 15px;
+            width: 100%;
+            position: relative;
         }
 
         .download-btn {
@@ -131,19 +84,210 @@
             background: transparent;
             border: 2px solid rgba(255, 255, 255, 0.5);
             border-radius: 12px;
-            padding: 12px 20px;
+            padding: 12px 3px;
             cursor: pointer;
             font-size: 16px;
             margin-top: 20px;
             transition: all 0.3s ease;
             width: 100%;
-            text-decoration: none;
             text-align: center;
+            text-decoration: none;
+            position: relative;
         }
 
         .download-btn:hover {
             background: rgba(255, 255, 255, 0.2);
         }
+
+        /* Fix for dropdown - Ensure it shows on hover */
+        .download-btn {
+            position: relative;
+        }
+
+        .dropdown {
+            display: none;
+            position: absolute;
+            background: #474A59;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            border-radius: 8px;
+            min-width: 150px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+            top: 100%;
+            left: 0;
+            width: 100%;
+        }
+
+        .download-btn:hover .dropdown {
+            display: block;
+        }
+
+        .dropdown a {
+            color: white;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .dropdown a:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .btn {
+            background: transparent;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            border-radius: 12px;
+            padding: 10px 20px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px 0;
+            transition: all 0.3s ease;
+            width: 100%;
+            text-align: center;
+            text-decoration: none;
+            position: relative;
+        }
+
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;  /* Change to hidden */
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            border: 1px solid #888;
+            width: 50%;
+            max-width: 500px;  /* Add max-width */
+            max-height: 80vh;  /* Add max-height */
+            overflow-y: auto;  /* Allow scrolling inside modal if needed */
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .stats-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px; /* Adds spacing between rows */
+        }
+        
+        .stats-row {
+            display: flex;
+            justify-content: center;
+            gap: 20px; /* Space between items */
+            flex-wrap: wrap;
+        }
+        
+        .stats-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 10px;
+            min-width: 150px; /* Ensures consistent width */
+        }        
+        
+        .stats-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .stats-item .label {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px; /* Add spacing between label and score */
+        }
+
+        .stats-item .score {
+            font-size: 24px;
+            font-weight: bold;
+            padding: 5px 10px;
+            border-radius: 8px;
+            color: white;
+        }
+        .hod-score {
+            background-color:rgb(225, 77, 171); /* Green */
+        }
+        .academics-score {
+            background-color:rgb(193, 225, 77); /* Green */
+        }
+        .research-score {
+            background-color: #4caf50; /* Green */
+        }
+
+        .selfm-score {
+            background-color: #2196f3; /* Blue */
+        }
+        .mentor-score {
+            background-color: #f44336; /* Red */
+        }
+        .total-score {
+            background-color: #ff9800; /* Orange */
+        }
+
+        @media (max-width: 767px) {
+            .page {
+                height: auto;
+                margin-bottom: 20px;
+                padding-bottom: 20px;
+            }
+
+            .container {
+                flex-direction: column;
+                height: 630px;
+                width: 320px;
+            }
+
+            .left, .right {
+                width: 100%;
+                text-align: center;
+            }
+            .dropdown {
+                position: static;
+                width: 100%;
+            }
+
+            .modal-content {
+                width: 90%;
+                max-height: 90vh;
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -151,21 +295,99 @@
         <div class="container">
             <div class="left">
                 <div class="login">Download File</div>
-                <div class="eula">click the button to download your file.</div>
+                <div class="eula">
+                    Staff name:{{ name }} <br>
+                </div>
             </div>
             <div class="right">
-                <div class="form">
-                    <div class="button-wrap">
-                        <button type="button" class="download-btn" onclick="window.location.href='{{ url_for('download') }}'">
-                            Click Here
-                        </button>
-                        <button type="button" class="download-btn" onclick="window.location.href='{{ url_for('upload') }}'">
-                            Back to details
-                        </button>
+                <div class="button-wrap">
+                    <button class="btn" onclick="openStatsModal()">View Stats</button>
+                    <div class="download-btn">
+                        Download Self Appraisal Form
+                        <div class="dropdown">
+                            <a onclick="downloadFile('docx')">Download as Word</a>
+                            <a onclick="downloadFile('pdf')">Download as PDF</a>
+                        </div>
                     </div>
+                    <div class="download-btn">
+                        Download Corrective Action Form
+                        <div class="dropdown">
+                            <a onclick="downloadFile('docx_feedback')">Download as Word</a>
+                            <a onclick="downloadFile('pdf_feedback')">Download as PDF</a>
+                        </div>
+                    </div>
+                    <a class="download-btn" href="{{ url_for('upload') }}">Back to details</a>
                 </div>
             </div>
         </div>
     </div>
+    <div id="statsModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeStatsModal()">&times;</span>
+            <div class="stats-container">
+                <div class="stats-title">Staff Stats</div>
+                <div class="stats-container">
+                    <!-- First Row -->
+                    <div class="stats-row">
+                        <div class="stats-item">
+                            <span class="label">Academics Score:</span>
+                            <span class="score academics-score">{{ academics }}</span>
+                        </div>
+                        <div class="stats-item">
+                            <span class="label">Research Score:</span>
+                            <span class="score research-score">{{ research }}</span>
+                        </div>
+                        <div class="stats-item">
+                            <span class="label">Self-Improvement Score:</span>
+                            <span class="score selfm-score">{{ selfm }}</span>
+                        </div>
+                    </div>
+                
+                    <!-- Second Row -->
+                    <div class="stats-row">
+                        <div class="stats-item">
+                            <span class="label">Student Mentorship Score:</span>
+                            <span class="score mentor-score">{{ mentor }}</span>
+                        </div>
+                        <div class="stats-item">
+                            <span class="label">HOD Feedback Score:</span>
+                            <span class="score hod-score">{{ hod }}</span>
+                        </div>
+                    </div>
+                
+                    <!-- Third Row (Centered) -->
+                    <div class="stats-row">
+                        <div class="stats-item">
+                            <span class="label">Total Score:</span>
+                            <span class="score total-score">{{ total_score }}</span>
+                        </div>
+                    </div>
+                </div>                               
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.2/mammoth.browser.min.js"></script>
+    <script>
+        function downloadFile(type) {
+            window.location.href = `/download/${type}`;
+        }
+        function openStatsModal() {
+            const modal = document.getElementById("statsModal");
+            modal.style.display = "block"; // Show the modal
+        }
+    
+        // Function to close the stats modal
+        function closeStatsModal() {
+            const modal = document.getElementById("statsModal");
+            modal.style.display = "none"; // Hide the modal
+        }
+    
+        // Close the modal when clicking outside of it
+        window.onclick = function(event) {
+            const modal = document.getElementById("statsModal");
+            if (event.target === modal) {
+                modal.style.display = "none";
+            }
+        };
+    </script>
 </body>
 </html>
