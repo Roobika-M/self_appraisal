@@ -352,8 +352,11 @@ def processing(excel_path, staffname, template_path):  # Add template_path param
 
     # After calculating the marks row:
     academics = get_total_academics_score(scores, nos)  # Store the total academics score
+    u1,academics = str(academics), str(academics)
 
 ######################################################################################################
+    r1.1,r2.1,r3.1,r4.1,r5.1,r6.1,r7.1,r8.1,r9.1,r10.1,r11.1,r12.1,r13.1=0,0,0,0,0,0,0,0,0,0,0,0,0
+    
     if "Journal Publication" in sheet_names:
         df_journal = pd.read_excel(excel_path, sheet_name="Journal Publication", skiprows=7)
 
@@ -388,11 +391,16 @@ def processing(excel_path, staffname, template_path):  # Add template_path param
                 if row.get("Impact Factor", "-")!='-':
                     if row.get("Impact Factor", "-")>3:
                         n+=3
+                        r2.1+=3
                     elif row.get("Impact Factor", "-")>1.5 and row.get("Impact Factor", "-")<=3:
                         n+=2
+                        r3.1+=2
                     elif row.get("Impact Factor", "-")>=1 and row.get("Impact Factor", "-")<=1.5:
                         n+=1
+                        r4.1+=1
                 n+=2 
+                r1.1+2
+                
 
             
             row_index=-1
@@ -455,10 +463,12 @@ def processing(excel_path, staffname, template_path):  # Add template_path param
                     table = table6
                     organized_by = row.get("Organized By", "-")
                     n += 2
+                    r8+=2
                 else:
                     table = table7
                     organized_by = row.get("Organized By", "-")
                     n += 1
+                    r9+=1
                 row_index = start_row + i
                 
                 if i + 2 >= len(table.rows):
@@ -512,6 +522,7 @@ def processing(excel_path, staffname, template_path):  # Add template_path param
                         total_amt+=row.get("Amount", "-")
             if row.get("Amount", "-")>1000000:
                 n+=(row.get("Amount", "-")//1000000)*2
+                r10+=n
             row_index=-1
             table7.add_row()
             table7.rows[row_index].cells[0].merge(table7.rows[row_index].cells[-2])
@@ -551,6 +562,7 @@ def processing(excel_path, staffname, template_path):  # Add template_path param
                             total_amt+=row.get("Amount", "-")
                 if row.get("Amount", "-")>50000:
                     n+=(row.get("Amount", "-")//50000)
+                    r11+=n###dout
                 row_index=-1
                 table9.add_row()
                 table9.rows[row_index].cells[0].merge(table9.rows[row_index].cells[-2])
