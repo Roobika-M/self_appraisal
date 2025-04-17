@@ -14,7 +14,7 @@ import win32com.client
 from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
 
 app = Flask(__name__)
-# app.secret_key = "your_secret_key"
+app.secret_key = "your_secret_key"
 
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:harshu7564@localhost/KITE_STAFF'
 # app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -192,7 +192,7 @@ def download_path():
 
 
 def convert_docx_to_pdf(docx_path, pdf_path):
-    pythoncom.CoInitialize()  # Fixes COM error
+    pythoncom.CoInitialize()  # Fixes COM errorWord
     word = win32com.client.Dispatch("Word.Application")
     word.Visible = False  # Run in background
 
@@ -205,8 +205,8 @@ def convert_docx_to_pdf(docx_path, pdf_path):
     except Exception as e:
         print(f"Error: {e}")
     finally:
-        word.Quit()  # Close Word
-        pythoncom.CoUninitialize()  # Clean up COM
+        word.Quit()  
+        pythoncom.CoUninitialize()  
 
 #################################### Load the Excel file
 # Load the Word document
@@ -214,7 +214,7 @@ def processing(excel_path, staffname, template_path):  # Add template_path param
     doc = Document("template.docx")
     doc1 = Document(template_path)  # Use the uploaded template file
     name = staffname
-    global m, n, research,selfm,mentor,academics,hod  # Declare m and n as global variables
+    global m, n, research,selfm,mentor,academics,hod  
     m = 0
     n = 0
     research = 0
@@ -224,8 +224,6 @@ def processing(excel_path, staffname, template_path):  # Add template_path param
     hod = 0
     sheet_names = pd.ExcelFile(excel_path).sheet_names
     ###############################################################
-    doc1 = Document(template_path)
-    doc = Document("template.docx")
     scores=[]
 
     # Access the second tables (Academics)   
