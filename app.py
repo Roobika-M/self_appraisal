@@ -178,7 +178,8 @@ def download(file_type):
 @app.route('/download_path')
 def download_path():
     global staffname, research, selfm, mentor, academics, hod
-    total_score = research + selfm + mentor + academics + hod
+    print(type(research), type(selfm), type(mentor), type(academics), type(hod))
+    total_score = int(research) + int(selfm) + int(mentor) + int(academics) + int(hod)    
     return render_template(
         "download.html", 
         name=staffname, 
@@ -352,14 +353,14 @@ def processing(excel_path, staffname, template_path):  # Add template_path param
 
     # After calculating the marks row:
     academics = get_total_academics_score(scores, nos)  # Store the total academics score
-    u1,academics = str(academics), str(academics)
+    u1,academics = str(academics), academics
 
 ######################################################################################################
-    r1.1,r2.1,r3.1,r4.1,r5.1,r6.1,r7.1,r8.1,r9.1,r10.1,r11.1,r12.1,r13.1=0,0,0,0,0,0,0,0,0,0,0,0,0
-    
+    global r1_1, r2_1, r3_1, r4_1, r5_1, r6_1, r7_1, r8_1, r9_1, r10_1, r11_1, r12_1, r13_1
+    r1_1, r2_1, r3_1, r4_1, r5_1, r6_1, r7_1, r8_1, r9_1, r10_1, r11_1, r12_1, r13_1 = 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0    
     if "Journal Publication" in sheet_names:
         df_journal = pd.read_excel(excel_path, sheet_name="Journal Publication", skiprows=7)
-
+ 
         # Fix column names (remove spaces)
         df_journal.columns = df_journal.columns.str.strip()
         df_filtered=[]
@@ -391,15 +392,15 @@ def processing(excel_path, staffname, template_path):  # Add template_path param
                 if row.get("Impact Factor", "-")!='-':
                     if row.get("Impact Factor", "-")>3:
                         n+=3
-                        r2.1+=3
+                        r2_1+=3
                     elif row.get("Impact Factor", "-")>1.5 and row.get("Impact Factor", "-")<=3:
                         n+=2
-                        r3.1+=2
+                        r3_1+=2
                     elif row.get("Impact Factor", "-")>=1 and row.get("Impact Factor", "-")<=1.5:
                         n+=1
-                        r4.1+=1
+                        r4_1+=1
                 n+=2 
-                r1.1+2
+                r1_1+2
                 
 
             
@@ -463,7 +464,7 @@ def processing(excel_path, staffname, template_path):  # Add template_path param
                     table = table6
                     organized_by = row.get("Organized By", "-")
                     n += 2
-                    r8+=2
+                    r8_1+=2
                 else:
                     table = table7
                     organized_by = row.get("Organized By", "-")
@@ -556,13 +557,15 @@ def processing(excel_path, staffname, template_path):  # Add template_path param
                         table9.cell(row_index+1, 3).text = str(row.get("Type", "-"))
                         table9.cell(row_index+1, 4).text = str(row.get("Funding Agent", "-"))  
                         table9.cell(row_index+1, 5).text = str(row.get("Amount", "-"))  
-                        table9.cell(row_index+1, 6).text = str(row.get("Applied On", "-"))  
+                        table9.cell(row_index+1, 6).text = str(row.get("Applied On", "-")) 
 
-                        if row.get("Amount", "-")!="-":
-                            total_amt+=row.get("Amount", "-")
-                if row.get("Amount", "-")>50000:
-                    n+=(row.get("Amount", "-")//50000)
-                    r11+=n###dout
+                        if row.get("Amount", "-")>50000:
+                            n+=(row.get("Amount", "-")//50000)
+                            r11_1+=n###dout 
+
+                        # if row.get("Amount", "-")!="-":
+                        #     total_amt+=row.get("Amount", "-")
+                
                 row_index=-1
                 table9.add_row()
                 table9.rows[row_index].cells[0].merge(table9.rows[row_index].cells[-2])
@@ -624,6 +627,7 @@ def processing(excel_path, staffname, template_path):  # Add template_path param
                     clear_and_write(table10.cell(row_index + 1, 2), "-")  # No filing date
                     clear_and_write(table10.cell(row_index + 1, 3), date_value)  # Date of Publish
                     n+=5
+                    r12_1+=5
                 else:
                     clear_and_write(table10.cell(row_index + 1, 2), "-")
                     clear_and_write(table10.cell(row_index + 1, 3), "-")
@@ -644,6 +648,8 @@ def processing(excel_path, staffname, template_path):  # Add template_path param
     #####################################table 10-consultancy####################
     #table consultancy no data da
     ########################################table 11-workshop#################
+    global p1_1,p2_1,p3_1,p4_1,p5_1,p6_1,p7_1
+    p1_1,p2_1,p3_1,p4_1,p5_1,p6_1,p7_1=0,0,0,0,0,0,0
     m = 0
     n = 0
     if "Workshop" in sheet_names:
@@ -673,6 +679,7 @@ def processing(excel_path, staffname, template_path):  # Add template_path param
                     table13.cell(row_index+1, 4).text = str(row.get("Venue", "-")) 
                     if n<3:
                         n+=1
+                        p1_1+=1
 
             row_index=-1
             table13.add_row()
@@ -712,6 +719,7 @@ def processing(excel_path, staffname, template_path):  # Add template_path param
                 table14.cell(row_index+1, 3).text = str(row.get("Description", "-"))  
                 table14.cell(row_index+1, 4).text = str(row.get("National or International", "-"))
                 n += 3
+                p2_1+=3
 
             row_index=-1
             table14.add_row()
@@ -751,6 +759,7 @@ def processing(excel_path, staffname, template_path):  # Add template_path param
                 table15.cell(row_index+1, 5).text = str(row.get("Awards","-"))
                 if n < 4:
                     n += 2
+                    p3_1+=2
 
             row_index=-1
             table15.add_row()
@@ -789,6 +798,7 @@ def processing(excel_path, staffname, template_path):  # Add template_path param
                 table16.cell(row_index+1, 4).text = str(row.get("Industry SPOC", "-")) 
                 table16.cell(row_index+1, 5).text = str(row.get("Duration","-"))
                 n += 1
+                p4_1+=1
 
             row_index=-1
             table16.add_row()
@@ -851,6 +861,7 @@ def processing(excel_path, staffname, template_path):  # Add template_path param
                     table17.cell(row_index+1, 6).text = str(row.get("Description", "-")) 
 
                     n += 0.5
+                    p6_1+=0.5
 
             row_index=-1
             table17.add_row()
@@ -891,6 +902,7 @@ def processing(excel_path, staffname, template_path):  # Add template_path param
                 table19.cell(row_index+1, 5).text = str(row.get("Description", "-"))  
                 table19.cell(row_index+1, 6).text = str(row.get("Topic Delivered", "-")) 
                 n += 1
+                p7_1+=1
 
 
             row_index=-1
@@ -905,6 +917,8 @@ def processing(excel_path, staffname, template_path):  # Add template_path param
     #####################table 17-###########################################################
     m = 0
     n=0
+    global s1_1,s2_1,s3_1,s4_1,s5_1
+    s1_1,s2_1,s3_1,s4_1,s5_1=0,0,0,0,0
     if "Project Guided or Mentoring" in sheet_names:
         df_filtered=[]
         df_project = pd.read_excel(excel_path, sheet_name="Project Guided or Mentoring",skiprows=7)
@@ -934,6 +948,7 @@ def processing(excel_path, staffname, template_path):  # Add template_path param
                 table21.cell(row_index+1, 5).text = str(row.get("Date", "-"))  
                 table21.cell(row_index+1, 6).text = str(row.get("Status", "-"))
                 n=1
+                s1_1=1
 
             row_index=-1
             table21.add_row()
@@ -955,8 +970,87 @@ def processing(excel_path, staffname, template_path):  # Add template_path param
             "{{dept}}":detaillist[2],
             "{{empid}}":detaillist[3]
         }
+    
+    placeholders2 = {
+            "{{research}}": str(research),
+            "{{selfm}}": str(selfm),
+            "{{mentor}}": str(mentor),
+            "{{academics}}": str(academics),  
+        }
 
-    # Replace placeholders in paragraphs with the corresponding values
+    for i in range(1, 14):
+        placeholders2[f"{{{{r{i}_1}}}}"] = globals().get(f"r{i}_1", None)
+
+    # Assign pi_1 to placeholders2[pi_1] for i in range 1 to 7
+    for i in range(1, 8):
+        placeholders2[f"{{{{p{i}_1}}}}"] = globals().get(f"p{i}_1", None)
+
+    # Assign si_1 to placeholders2[si_1] for i in range 1 to 5
+    for i in range(1, 6):
+        placeholders2[f"{{{{s{i}_1}}}}"] = globals().get(f"s{i}_1", None)
+
+    score=[academics, research, selfm, mentor,hod]
+
+    fdoc = Document("Faculty Appraisal- Corrective Action Report.docx")
+
+    # Replace placeholders in paragraphs
+    for table in fdoc.tables:
+        for row in table.rows:
+            for cell in row.cells:
+                for paragraph in cell.paragraphs:
+                    full_text = paragraph.text
+                    for placeholder, value in placeholders2.items():
+                        if placeholder in full_text:
+                            full_text = full_text.replace(placeholder, str(value))
+                    paragraph.text = full_text
+    lasttable = fdoc.tables[2]
+    assispro = [0.3, 0.3, 0.15, 0.15, 0.1]
+    assospro = [0.2, 0.4, 0.15, 0.15, 0.1]
+    prof = [0.1, 0.4, 0.2, 0.2, 0.1]
+    tot = 0
+    print(detaillist[1])
+
+    for row_idx, row in zip(range(2, 6), lasttable.rows[2:6]):  # rows 2 to 5
+        for cell_idx, cell in zip(range(1, 6), row.cells[1:6]):  # cells 1 to 5
+            if row_idx == 2:
+                cell.text = str(score[cell_idx - 1])  
+
+            elif row_idx == 3:
+                if detaillist[1] == "Professor":
+                    cell.text = str(prof[cell_idx - 1])
+                elif detaillist[1] == "Associate Professor":
+                    cell.text = str(assospro[cell_idx - 1])
+                elif detaillist[1] == "Assistant Professor":
+                    cell.text = str(assispro[cell_idx - 1])
+                else:
+                    cell.text = "0"
+
+            elif row_idx == 4:
+                if detaillist[1] == "Professor":
+                    weight = prof[cell_idx - 1]
+                elif detaillist[1] == "Associate Professor":
+                    weight = assospro[cell_idx - 1]
+                elif detaillist[1] == "Assistant Professor":
+                    weight = assispro[cell_idx - 1]
+                else:
+                    weight = 0
+
+                weighted_score = score[cell_idx - 1] * weight
+                cell.text = str(weighted_score)
+                tot += weighted_score
+
+            else:
+                print("Not filled")
+
+    # Write total to last cell in 5th row (index 4)
+    lasttable.rows[4].cells[-1].text = str(tot)
+
+    
+
+    # Save final doc
+    fdoc.save("appfilled_template.docx")
+    print("Document saved as filled_template.docx")
+        # Replace placeholders in paragraphs with the corresponding values
     for placeholder, value in placeholders.items():
         for paragraph in doc.paragraphs:
             if placeholder in paragraph.text:
@@ -964,6 +1058,7 @@ def processing(excel_path, staffname, template_path):  # Add template_path param
     # Save the modified document
     output_doc_path = "filled_template.docx"
     doc.save(output_doc_path)
+    fdoc.save("debug_filled_template.docx")
     print(f"Word document saved as {output_doc_path}")
 
 def copy_table_contents(source_table, dest_table):
