@@ -161,6 +161,8 @@ def download(file_type):
     upload_folder = os.getcwd()  # Get current working directory
     docx_filename = os.path.join(upload_folder, "filled_template.docx")
     pdf_filename = os.path.join(upload_folder, "filled_template.pdf")
+    docx_corrective_filename = os.path.join(upload_folder, "appfilled_template.docx")
+    pdf_corrective_filename = os.path.join(upload_folder, "appfilled_template.pdf")
 
     if file_type == "docx":
         if not os.path.exists(docx_filename):
@@ -172,6 +174,17 @@ def download(file_type):
         if not os.path.exists(pdf_filename):
             return "PDF conversion failed", 500
         return send_file(pdf_filename, as_attachment=True)
+
+    elif file_type == "docx_corrective":
+        if not os.path.exists(docx_corrective_filename):
+            return "File not found", 404
+        return send_file(docx_corrective_filename, as_attachment=True)
+
+    elif file_type == "pdf_corrective":
+        convert_docx_to_pdf(docx_corrective_filename, pdf_corrective_filename)
+        if not os.path.exists(pdf_corrective_filename):
+            return "PDF conversion failed", 500
+        return send_file(pdf_corrective_filename, as_attachment=True)
 
     return "Invalid file type", 400
 
