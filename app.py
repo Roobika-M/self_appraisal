@@ -106,11 +106,11 @@ def upload():
 
         print(f"Files saved: Excel - {excel_path}, Template - {template_path}")  # Debugging
 
-        try:
-            processing(excel_path, staffname, template_path)  # Pass template_path to processing function
-        except Exception as e:
-            print(f"Error processing files: {e}")  # Debugging
-            return render_template('upload.html', error="Error processing files.")
+        # try:
+        processing(excel_path, staffname, template_path)  # Pass template_path to processing function
+        # except Exception as e:
+            # print(f"Error processing files: {e}")  # Debugging
+            # return render_template('upload.html', error="Error processing files.")
 
         print("Redirecting to download page...")  # Debugging
         return redirect(url_for("download_path"))
@@ -221,6 +221,20 @@ def convert_docx_to_pdf(docx_path, pdf_path):
     finally:
         word.Quit()  
         pythoncom.CoUninitialize()  
+
+
+def find_header_row(excel_path, sheet_name):
+    # Read the first few rows to find the header
+    df_temp = pd.read_excel(excel_path, sheet_name=sheet_name, nrows=15)
+    
+    # Look for "Faculty Name" or "Name of the faculty" in each row
+    for idx, row in df_temp.iterrows():
+        row_values = [str(val).lower().strip() for val in row if pd.notna(val)]
+        if 'faculty name' in row_values or 'name of the faculty' in row_values:
+            return idx
+    
+    return None 
+
 
 #################################### Load the Excel file
 # Load the Word document
@@ -372,8 +386,9 @@ def processing(excel_path, staffname, template_path):  # Add template_path param
     global r1_1, r2_1, r3_1, r4_1, r5_1, r6_1, r7_1, r8_1, r9_1, r10_1, r11_1, r12_1, r13_1
     r1_1, r2_1, r3_1, r4_1, r5_1, r6_1, r7_1, r8_1, r9_1, r10_1, r11_1, r12_1, r13_1 = 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0    
     if "Journal Publication" in sheet_names:
-        df_journal = pd.read_excel(excel_path, sheet_name="Journal Publication", skiprows=7)
- 
+        print(find_header_row(excel_path, "Journal Publication"))
+        df_journal = pd.read_excel(excel_path, sheet_name="Journal Publication", skiprows=find_header_row(excel_path, "Journal Publication")+1)
+
         # Fix column names (remove spaces)
         df_journal.columns = df_journal.columns.str.strip()
         df_filtered=[]
@@ -429,7 +444,7 @@ def processing(excel_path, staffname, template_path):  # Add template_path param
     if "Book Publication" in sheet_names:
 
         n = 0
-        df_bookpub = pd.read_excel(excel_path, sheet_name="Book Publication", skiprows=7)
+        df_bookpub = pd.read_excel(excel_path, sheet_name="Book Publication", skiprows=find_header_row(excel_path, "Book Publication")+1)
 
         df_bookpub.columns = df_bookpub.columns.str.strip()
         df_filtered=[]
@@ -456,7 +471,7 @@ def processing(excel_path, staffname, template_path):  # Add template_path param
         #######################################table4,5-conference##################################
     if "Conferences" in sheet_names:
         n = 0
-        df_conference = pd.read_excel(excel_path, sheet_name="Conferences", skiprows=7)
+        df_conference = pd.read_excel(excel_path, sheet_name="Conferences", skiprows=find_header_row(excel_path, "Conferences")+1)
         df_filtered=[]
         df_conference.columns = df_conference.columns.str.strip()
         df_conference["Faculty Name"] = df_conference["Faculty Name"].ffill()
@@ -508,7 +523,7 @@ def processing(excel_path, staffname, template_path):  # Add template_path param
         n = 0
         total_amt=0
         df_filtered=[]
-        df_research = pd.read_excel(excel_path, sheet_name="Research Grant", skiprows=7)
+        df_research = pd.read_excel(excel_path, sheet_name="Research Grant", skiprows=find_header_row(excel_path, "Research Grant")+1)
 
         df_research.columns = df_research.columns.str.strip()
 
@@ -548,7 +563,7 @@ def processing(excel_path, staffname, template_path):  # Add template_path param
     #########################################table 7-seminar#########################################
     if "Research Grant" in sheet_names:
         n = 0
-        df_seminar = pd.read_excel(excel_path, sheet_name="Research Grant", skiprows=7)
+        df_seminar = pd.read_excel(excel_path, sheet_name="Research Grant", skiprows=find_header_row(excel_path, "Research Grant")+1)
         df_filtered=[]
         df_seminar.columns = df_seminar.columns.str.strip()
 
@@ -666,7 +681,7 @@ def processing(excel_path, staffname, template_path):  # Add template_path param
     m = 0
     n = 0
     if "Workshop" in sheet_names:
-        df_workshop = pd.read_excel(excel_path, sheet_name="Workshop", skiprows=7)
+        df_workshop = pd.read_excel(excel_path, sheet_name="Workshop", skiprows=find_header_row(excel_path, "Workshop")+1)
 
         df_workshop.columns = df_workshop.columns.str.strip()
         df_filtered=[]
@@ -701,13 +716,14 @@ def processing(excel_path, staffname, template_path):  # Add template_path param
             run = paragraph.add_run("Total score")
             paragraph.alignment = WD_PARAGRAPH_ALIGNMENT.RIGHT
             table13.cell(-1, 4).text = str(n)
+            
             m = m+n
 
     ###################################table 12-skill dev####################################
     if "Faculty Internship" in sheet_names:
         n = 0
         df_filtered=[]
-        df_develop = pd.read_excel(excel_path, sheet_name="Faculty Internship", skiprows=7)
+        df_develop = pd.read_excel(excel_path, sheet_name="Faculty Internship", skiprows=find_header_row(excel_path, "Faculty Internship")+1)
         df_develop.columns = df_develop.columns.str.strip()
         possible_names=["Faculty Name","Faculty Name"] 
         selectedcol=next((col for col in possible_names if col in df_develop.columns),None)
@@ -741,12 +757,13 @@ def processing(excel_path, staffname, template_path):  # Add template_path param
             run = paragraph.add_run("Total score")
             paragraph.alignment = WD_PARAGRAPH_ALIGNMENT.RIGHT
             table14.cell(-1, 4).text = str(n)
+            
             m = m+n
     #############################table 13-mooc&nptel#############################################
     if "MOOC Course" in sheet_names:
         n = 0
         df_filtered=[]
-        df_mooc = pd.read_excel(excel_path,sheet_name="MOOC Course", skiprows=7)
+        df_mooc = pd.read_excel(excel_path,sheet_name="MOOC Course", skiprows=find_header_row(excel_path, "MOOC Course")+1)
         df_mooc.columns = df_mooc.columns.str.strip()
         possible_names=["Faculty Name","Faculty Name"] 
         selectedcol=next((col for col in possible_names if col in df_mooc.columns),None)
@@ -781,12 +798,13 @@ def processing(excel_path, staffname, template_path):  # Add template_path param
             run = paragraph.add_run("Total score")
             paragraph.alignment = WD_PARAGRAPH_ALIGNMENT.RIGHT
             table15.cell(-1, 5).text = str(n)
+            
             m = m+n
     ##################################table 14-mou##################################
     if "MoU" in sheet_names:
         n = 0
         df_filtered=[]
-        df_mou = pd.read_excel(excel_path,sheet_name="MoU", skiprows=7)
+        df_mou = pd.read_excel(excel_path,sheet_name="MoU", skiprows=find_header_row(excel_path, "MoU")+1)
         df_mou.columns = df_mou.columns.str.strip()
         possible_names=["Faculty Name","Faculty Name"] 
         selectedcol=next((col for col in possible_names if col in df_mou.columns),None)
@@ -820,6 +838,7 @@ def processing(excel_path, staffname, template_path):  # Add template_path param
             run = paragraph.add_run("Total score")
             paragraph.alignment = WD_PARAGRAPH_ALIGNMENT.RIGHT
             table16.cell(-1, 5).text = str(n)
+            
             m = m+n
     ###################################table 16-spl contribute##################################
 
@@ -846,7 +865,7 @@ def processing(excel_path, staffname, template_path):  # Add template_path param
     ###################################table 16-no of conference,workshop,hack###############################################
     if "Workshops" in sheet_names:
         n = 0
-        df_workshop = pd.read_excel(excel_path, sheet_name="Workshops", skiprows=7)
+        df_workshop = pd.read_excel(excel_path, sheet_name="Workshops", skiprows=find_header_row(excel_path, "Workshops")+1)
         df_filtered=[]
         df_workshop.columns = df_workshop.columns.str.strip()
 
@@ -883,12 +902,13 @@ def processing(excel_path, staffname, template_path):  # Add template_path param
             run = paragraph.add_run("Total score")
             paragraph.alignment = WD_PARAGRAPH_ALIGNMENT.RIGHT
             table17.cell(-1, 6).text = str(n)
+            
             m = m+n
     ################################################table 17-expert visit###############################
     if "Guest Lectures" in sheet_names:
         n = 0
         df_filtered=[]
-        df_experts = pd.read_excel(excel_path, sheet_name="Guest Lectures", skiprows=7)
+        df_experts = pd.read_excel(excel_path, sheet_name="Guest Lectures", skiprows=find_header_row(excel_path, "Guest Lectures")+1)
 
         df_experts.columns = df_experts.columns.str.strip()
 
@@ -925,8 +945,9 @@ def processing(excel_path, staffname, template_path):  # Add template_path param
             run = paragraph.add_run("Total score")
             paragraph.alignment = WD_PARAGRAPH_ALIGNMENT.RIGHT
             table19.cell(-1, 6).text = str(n)
+            
             m = m+n
-    selfm = m+n
+    selfm = m
     #####################table 17-###########################################################
     m = 0
     n=0
@@ -934,7 +955,7 @@ def processing(excel_path, staffname, template_path):  # Add template_path param
     s1_1,s2_1,s3_1,s4_1,s5_1=0,0,0,0,0
     if "Project Guided or Mentoring" in sheet_names:
         df_filtered=[]
-        df_project = pd.read_excel(excel_path, sheet_name="Project Guided or Mentoring",skiprows=7)
+        df_project = pd.read_excel(excel_path, sheet_name="Project Guided or Mentoring",skiprows=find_header_row(excel_path, "Project Guided or Mentoring")+1)
 
         df_project.columns = df_project.columns.str.strip()
 
