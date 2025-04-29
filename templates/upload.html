@@ -189,6 +189,41 @@
             transition: background-color 5000s ease-in-out 0s;
         }
 
+        /* Additional autofill fix for Firefox */
+        input:-moz-autofill,
+        textarea:-moz-autofill,
+        select:-moz-autofill {
+            box-shadow: 0 0 0px 1000px #474A59 inset !important;
+            -moz-text-fill-color: white !important;
+            transition: background-color 5000s ease-in-out 0s;
+        }
+
+    /* Additconsole.log("Page loaded");
+console.log("Form submitted");ional autofill fix with more specificity and !important */
+    input:-webkit-autofill,
+    input:-webkit-autofill:hover,
+    input:-webkit-autofill:focus,
+    textarea:-webkit-autofill,
+    textarea:-webkit-autofill:hover,
+    textarea:-webkit-autofill:focus,
+    select:-webkit-autofill,
+    select:-webkit-autofill:hover,
+    select:-webkit-autofill:focus {
+        background-color: #474A59 !important;
+        color: white !important;
+        -webkit-text-fill-color: white !important;
+        -webkit-box-shadow: 0 0 0px 1000px #474A59 inset !important;
+        transition: background-color 5000s ease-in-out 0s;
+    }
+
+    /* Additional autofill fix for Firefox */
+    input:-moz-autofill,
+    textarea:-moz-autofill,
+    select:-moz-autofill {
+        box-shadow: 0 0 0px 1000px #474A59 inset !important;
+        -moz-text-fill-color: white !important;
+        transition: background-color 5000s ease-in-out 0s;
+    }
     </style>
 </head>
 <body>
@@ -245,6 +280,16 @@
             const fileName = document.getElementById(spanId);
             fileName.textContent = input.files.length > 0 ? input.files[0].name : "No file chosen";
         }
+
+        // JavaScript to force input text color to white for autofilled inputs
+        window.addEventListener('load', () => {
+            const inputs = document.querySelectorAll('input');
+            inputs.forEach(input => {
+                if (input.matches(':-webkit-autofill')) {
+                    input.style.color = 'white';
+                }
+            });
+        });
     </script>      
 </body>
 </html>
