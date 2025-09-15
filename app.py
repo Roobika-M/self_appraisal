@@ -161,6 +161,8 @@ def download(file_type):
     upload_folder = os.getcwd()  # Get current working directory
     docx_filename = os.path.join(upload_folder, "filled_template.docx")
     pdf_filename = os.path.join(upload_folder, "filled_template.pdf")
+    docx_feedback_filename = os.path.join(upload_folder, "filled_template_feedback.docx")
+    pdf_feedback_filename = os.path.join(upload_folder, "filled_template_feedback.pdf")
 
     if file_type == "docx":
         if not os.path.exists(docx_filename):
@@ -172,6 +174,20 @@ def download(file_type):
         if not os.path.exists(pdf_filename):
             return "PDF conversion failed", 500
         return send_file(pdf_filename, as_attachment=True)
+
+    elif file_type == "docx_feedback":
+        if not os.path.exists(docx_feedback_filename):
+            return "Feedback file not found", 404
+        return send_file(docx_feedback_filename, as_attachment=True)
+
+    elif file_type == "pdf_feedback":
+        # Convert docx_feedback to pdf_feedback if needed
+        if not os.path.exists(docx_feedback_filename):
+            return "Feedback DOCX file not found", 404
+        convert_docx_to_pdf(docx_feedback_filename, pdf_feedback_filename)
+        if not os.path.exists(pdf_feedback_filename):
+            return "Feedback PDF conversion failed", 500
+        return send_file(pdf_feedback_filename, as_attachment=True)
 
     return "Invalid file type", 400
 
