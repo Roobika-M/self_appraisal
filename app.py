@@ -1022,6 +1022,7 @@ def processing(excel_path, staffname, template_path):  # Add template_path param
     # Assign si_1 to placeholders2[si_1] for i in range 1 to 5
     for i in range(1, 6):
         placeholders2[f"{{{{s{i}_1}}}}"] = globals().get(f"s{i}_1", None)
+    placeholders2["{{u1}}"]=u1
 
     score=[academics, research, selfm, mentor,hod]
 
